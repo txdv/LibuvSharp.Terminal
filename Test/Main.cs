@@ -46,10 +46,10 @@ namespace Test
 	{
 		public const int LLCORNER = unchecked((int)0x40006d);
 		public const int LRCORNER = unchecked((int)0x40006a);
-		public const int HLINE = unchecked((int)0x400071);
+		public const int HLINE    = unchecked((int)0x400071);
 		public const int ULCORNER = unchecked((int)0x40006c);
 		public const int URCORNER = unchecked((int)0x40006b);
-		public const int VLINE = unchecked((int)0x400078);
+		public const int VLINE    = unchecked((int)0x400078);
 	}
 
 	public class ColorString
