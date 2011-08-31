@@ -320,10 +320,6 @@ namespace Test
 				return;
 			}
 
-			System.Console.Error.WriteLine("Redraw");
-			//var color = ColorPair.From(255, 237);
-			//Curses.attron(color.Attribute);
-
 			int x = X;
 			int h = 0;
 
@@ -362,8 +358,6 @@ namespace Test
 					h += entry.Height;
 				}
 			}
-
-			//Curses.attroff(color.Attribute);
 		}
 	}
 
