@@ -8,7 +8,7 @@ namespace Mono.Terminal
 				return x;
 			}
 			set {
-				SetPos(value, Y);
+				SetDim(value, y, width, height);
 			}
 		}
 
@@ -18,7 +18,7 @@ namespace Mono.Terminal
 				return y;
 			}
 			set {
-				SetPos(X, value);
+				SetDim(x, value, width, height);
 			}
 		}
 
@@ -28,7 +28,7 @@ namespace Mono.Terminal
 				return width;
 			}
 			set {
-				SetDim(value, Height);
+				SetDim(x, y, value, Height);
 			}
 		}
 
@@ -38,18 +38,14 @@ namespace Mono.Terminal
 				return height;
 			}
 			set {
-				SetDim(Width, value);
+				SetDim(x, y, Width, value);
 			}
 		}
 
-		public virtual void SetPos(int x, int y)
+		public virtual void SetDim(int x, int y, int w, int h)
 		{
 			this.x = x;
 			this.y = y;
-		}
-
-		public virtual void SetDim(int w, int h)
-		{
 			width = w;
 			height = h;
 		}

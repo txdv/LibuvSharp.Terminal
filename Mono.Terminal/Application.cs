@@ -44,14 +44,14 @@ namespace Mono.Terminal
 
 		public static void Run(IKeyDispatcher keyDispatcher, Container container)
 		{
-			container.SetPos(0, 0);
-			container.SetDim(Curses.Terminal.Width, Curses.Terminal.Height);
-
 			if (container.CanFocus) {
 				container.HasFocus = true;
 			}
 
+
 			// draw everything and refresh curses
+			container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
+
 			container.Redraw();
 			container.SetCursorPosition();
 			Curses.Refresh();

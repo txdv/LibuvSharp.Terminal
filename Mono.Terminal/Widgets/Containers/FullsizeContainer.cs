@@ -28,16 +28,10 @@ namespace Mono.Terminal
 			return Widget.ProcessKey(key);
 		}
 
-		public override void SetPos (int x, int y)
+		public override void SetDim(int x, int y, int w, int h)
 		{
-			base.SetPos(x, y);
-			Widget.SetPos(x, y);
-		}
-
-		public override void SetDim(int w, int h)
-		{
-			base.SetDim(w, h);
-			Widget.SetDim(w, h);
+			base.SetDim(x, y, w, h);
+			Widget.SetDim(x, y, w, h);
 		}
 
 		public override bool CanFocus {

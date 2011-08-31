@@ -249,6 +249,13 @@ namespace Test
 			}
 		}
 
+		public override void SetDim(int x, int y, int w, int h)
+		{
+			base.SetDim(x, y, w, h);
+
+			CalculateTotaleHeight();
+		}
+
 		public int MaximumPosition {
 			get {
 				return TotalHeight - Height;
@@ -319,8 +326,6 @@ namespace Test
 
 			int x = X;
 			int h = 0;
-
-			CalculateTotaleHeight();
 
 			ViewPortEntry entry;
 

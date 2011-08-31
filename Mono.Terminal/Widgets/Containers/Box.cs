@@ -2,110 +2,6 @@ using System.Collections.Generic;
 
 namespace Mono.Terminal
 {
-	public class HBox : Box
-	{
-		public HBox()
-			: base()
-		{
-		}
-
-		public HBox(int w, int h)
-			: base(w, h)
-		{
-		}
-
-		public HBox(int x, int y, int w, int h)
-			: base(x, y, w, h)
-		{
-		}
-
-		public override void Redraw()
-		{
-			int totalwidth = 0;
-			int fillcount = 0;
-
-			foreach (var element in widgets) {
-				var widget = element.Widget;
-				if (element.Setting == Setting.Size) {
-					totalwidth += widget.Width;
-				} else {
-					fillcount++;
-				}
-			}
-
-			int x = 0;
-			int fillsize = (Width - totalwidth) / fillcount;
-			foreach (var element in widgets) {
-				var widget = element.Widget;
-
-				widget.Y = Y;
-				widget.Height = Height;
-
-				widget.X = x;
-
-				if (element.Setting == Setting.Fill) {
-					widget.Width = fillsize;
-				}
-
-				x += widget.Width;
-
-				widget.Redraw();
-			}
-		}
-	}
-
-	public class VBox : Box
-	{
-		public VBox()
-			: base()
-		{
-		}
-
-		public VBox(int w, int h)
-			: base(w, h)
-		{
-		}
-
-		public VBox(int x, int y, int w, int h)
-			: base(x, y, w, h)
-		{
-		}
-
-		public override void Redraw()
-		{
-			int totalheight = 0;
-			int fillcount = 0;
-
-			foreach (var element in widgets) {
-				var widget = element.Widget;
-				if (element.Setting == Setting.Size) {
-					totalheight += widget.Height;
-				} else {
-					fillcount++;
-				}
-			}
-
-			int y = 0;
-			int fillsize = (Height - totalheight) / fillcount;
-			foreach (var element in widgets) {
-				var widget = element.Widget;
-
-				widget.X = X;
-				widget.Width = Width;
-
-				widget.Y = y;
-
-				if (element.Setting == Setting.Fill) {
-					widget.Height = fillsize;
-				}
-
-				y += widget.Height;
-
-				widget.Redraw();
-			}
-		}
-	}
-
 	public abstract class Box : Container, IEnumerable<Widget>
 	{
 		public enum Setting
@@ -150,6 +46,13 @@ namespace Mono.Terminal
 		{
 			if (CurrentFocus != null) {
 				CurrentFocus.SetCursorPosition();
+			}
+		}
+
+		public override void Redraw()
+		{
+			foreach (var element in widgets) {
+				element.Widget.Redraw();
 			}
 		}
 
@@ -244,6 +147,95 @@ namespace Mono.Terminal
 			return GetEnumerator();
 		}
 		#endregion
+	}
+
+	public class HBox : Box
+	{
+		public HBox()
+			: base()
+		{
+		}
+
+		public HBox(int w, int h)
+			: base(w, h)
+		{
+		}
+
+		public HBox(int x, int y, int w, int h)
+			: base(x, y, w, h)
+		{
+		}
+
+		public override void SetDim(int x, int y, int w, int h)
+		{
+			int totalwidth = 0;
+			int fillcount = 0;
+
+			foreach (var element in widgets) {
+				var widget = element.Widget;
+				if (element.Setting == Setting.Size) {
+					totalwidth += widget.Width;
+				} else {
+					fillcount++;
+				}
+			}
+
+			x = 0;
+			int fillsize = (Width - totalwidth) / fillcount;
+			foreach (var element in widgets) {
+				var widget = element.Widget;
+
+				widget.SetDim(x, Y, (element.Setting == Setting.Fill ? fillsize : widget.Width), Height);
+
+				x += widget.Width;
+			}
+		}
+	}
+
+	public class VBox : Box
+	{
+		public VBox()
+			: base()
+		{
+		}
+
+		public VBox(int w, int h)
+			: base(w, h)
+		{
+		}
+
+		public VBox(int x, int y, int w, int h)
+			: base(x, y, w, h)
+		{
+		}
+
+		public override void SetDim(int x, int y, int w, int h)
+		{
+			base.SetDim(x, y, w, h);
+
+			int totalheight = 0;
+			int fillcount = 0;
+
+			foreach (var element in widgets) {
+				var widget = element.Widget;
+				if (element.Setting == Setting.Size) {
+					totalheight += widget.Height;
+				} else {
+					fillcount++;
+				}
+			}
+
+			y = 0;
+			int fillsize = (Height - totalheight) / fillcount;
+			foreach (var element in widgets) {
+				var widget = element.Widget;
+
+				widget.SetDim(X, y, Width, (element.Setting == Setting.Fill ? fillsize : widget.Height));
+
+				y += widget.Height;
+
+			}
+		}
 	}
 }
 
