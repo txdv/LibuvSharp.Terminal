@@ -161,14 +161,14 @@ namespace Test
 			String = GetTime(AccentColor) + ' ' + GetNick(AccentColor, '+') + "\x0000255  " + Info.Message;
 		}
 
-		public int GetHeight(int width)
+		public int CalculateHeight(int width)
 		{
 			return (int)Math.Ceiling((double)ColorString.Length(String) / width);
 		}
 
-		public int GetFillout(int width)
+		public int CalculateFillout(int width)
 		{
-			return (GetHeight(width) * width) - ColorString.Length(String);
+			return (CalculateHeight(width) * width) - ColorString.Length(String);
 		}
 
 		string Empty(int length)
@@ -204,7 +204,7 @@ namespace Test
 
 			Move(0, 0);
 
-			string res = String + string.Format("\x0000{0} ", 255) + Empty(GetFillout(Width));
+			string res = String + string.Format("\x0000{0} ", 255) + Empty(CalculateFillout(Width));
 
 			int i = 0;
 			int x = 0, y = 0;
@@ -224,53 +224,21 @@ namespace Test
 
 	public class ViewPort : Widget
 	{
+		private LinkedList<ViewPortEntry> entries = new LinkedList<ViewPortEntry>();
+
 		public ViewPort()
 		{
 			PageFactor = 0.8;
 		}
 
-		private int position;
-		public int Position {
-			get {
-				return position;
-			}
-			set {
-				if (position == value) {
-					return;
-				}
-
-				Invalid = true;
-				position = value;
-				if (position < MinimumPosition) {
-					position = MinimumPosition;
-				} else if (position > MaximumPosition) {
-					position = MaximumPosition;
-				}
-			}
-		}
+		protected LinkedListNode<ViewPortEntry> Position { get; set; }
 
 		public override void SetDim(int x, int y, int w, int h)
 		{
 			base.SetDim(x, y, w, h);
-
-			CalculateTotaleHeight();
-		}
-
-		public int MaximumPosition {
-			get {
-				return TotalHeight - Height;
-			}
-		}
-
-		public int MinimumPosition {
-			get {
-				return 0;
-			}
 		}
 
 		public double PageFactor { get; set; }
-
-		public int TotalHeight { get; protected set; }
 
 		public void Add(ViewPortEntry entry)
 		{
@@ -280,35 +248,85 @@ namespace Test
 			if (entries.Last != null) {
 				entry.Previous = entries.Last.Value;
 			}
+
 			entries.AddLast(entry);
 		}
 
-		private LinkedList<ViewPortEntry> entries = new LinkedList<ViewPortEntry>();
+		protected LinkedListNode<ViewPortEntry> PrevPosition(int lines)
+		{
+			if (Position == null) {
+				var current = entries.Last;
+				int l = lines;
+				while (current.Previous != null && l > 0) {
+					l -= current.Value.CalculateHeight(Width);
+					current = current.Previous;
+				}
+
+				while (current.Previous != null && lines > 0) {
+					lines -= current.Value.CalculateHeight(Width);
+					current = current.Previous;
+				}
+
+				return current;
+			} else {
+				var current = Position;
+				while (current.Previous != null && lines > 0) {
+					lines -= current.Value.CalculateHeight(Width);
+					current = current.Previous;
+				}
+
+				return current;
+			}
+		}
+
+		protected LinkedListNode<ViewPortEntry> NextPosition(int lines)
+		{
+
+			if (Position == null || Position == entries.Last) {
+				return null;
+			}
+
+			LinkedListNode<ViewPortEntry> current;
+
+			for (current = Position; current != null && lines > 0; current = current.Next) {
+				lines -= current.Value.CalculateHeight(Width);
+			}
+
+			var ret = current;
+
+			if (ret == entries.Last || ret == null) {
+				return null;
+			}
+
+			lines = Height;
+
+			for (;lines > 0; current = current.Next) {
+				if (current == null) {
+					return null;
+				}
+				lines -= current.Value.CalculateHeight(Width);
+			}
+
+
+			return ret;
+		}
 
 		public override bool ProcessKey(int key)
 		{
 			switch (key) {
 			case 339:
-				if (TotalHeight - Position > Height) {
-					Position += (int)(Height * PageFactor);
-				}
+				Position = PrevPosition((int)(Height * PageFactor));
+				Invalid = true;
 				return true;
 			case 338:
-				if (Position > MinimumPosition) {
-					Position -= (int)(Height * PageFactor);
+				if (Position == null) {
+					return true;
 				}
+				Position = NextPosition((int)(Height * PageFactor));
+				Invalid = true;
 				return true;
 			default:
 				return false;
-			}
-		}
-
-		private void CalculateTotaleHeight()
-		{
-			TotalHeight = 0;
-			for (var element = entries.First; element != null; element = element.Next) {
-				var entry = element.Value;
-				TotalHeight += entry.GetHeight(Width);
 			}
 		}
 
@@ -320,44 +338,74 @@ namespace Test
 				return;
 			}
 
-			int x = X;
-			int h = 0;
 
 			ViewPortEntry entry;
 
-			if (TotalHeight > Height) {
-				// we have just to pait a certain *window* of the entire list
-				h = Height;
-				for (var element = entries.Last; element != null; element = element.Previous) {
+			LinkedListNode<ViewPortEntry> element;
+
+			int x = X;
+			int h = 0;
+			int w = Width;
+
+			if (Position == null) {
+				for (element = entries.Last; element != null && h < Height; element = element.Previous) {
 					entry = element.Value;
 
-					entry.Width = Width;
-					entry.Height = entry.GetHeight(Width);
-					h -= entry.Height;
-					entry.X = x;
-					entry.Y = h + Position;
+					entry.Height = entry.CalculateHeight(w);
+					h += entry.Height;
+				}
 
-					if (entry.Y + entry.Height < 0) {
-						return;
+				if (h < Height) {
+					h = 0;
+					for (element = entries.First; element != null; element = element.Next) {
+						entry = element.Value;
+
+						entry.SetDim(x, h, w, entry.Height);
+
+						if (!entry.Visible) {
+							return;
+						}
+
+						h += entry.Height;
+
+						entry.Redraw();
 					}
+				} else {
+					h = Height;
+					for (element = entries.Last; element != null; element = element.Previous) {
 
-					entry.Redraw();
+						if (h < 0) {
+							return;
+						}
+
+						entry = element.Value;
+
+						int ch = entry.CalculateHeight(w);
+
+						h -= ch;
+
+						entry.SetDim(x, h, w, ch);
+
+
+						entry.Redraw();
+
+					}
 				}
 			} else {
-				// everything fills in, just paint it
-				for (var element = entries.First; element != null; element = element.Next) {
+				for (element = Position; element != null && h < Height; element = element.Next) {
 					entry = element.Value;
 
-					entry.X = x;
-					entry.Y = h;
-					entry.Width = Width;
-					entry.Height = entry.GetHeight(Width);
+					entry.SetDim(x, h, w, entry.CalculateHeight(w));
 
 					entry.Redraw();
 
 					h += entry.Height;
 				}
 			}
+		}
+
+		protected void DrawTop()
+		{
 		}
 	}
 
@@ -498,8 +546,6 @@ namespace Test
 		{
 			char ch = (char)key;
 
-			System.Console.Error.WriteLine(key);
-
 			switch (key) {
 			case (int)'a' - 96:
 				Position = 0;
@@ -598,7 +644,7 @@ namespace Test
 
 			//Move(0, 0);
 
-			Set(0, 0, "This is some awesome biatch ass mofo");
+			Set(0, 0, "Awesome wicked text");
 
 			Curses.attroff(Color.Attribute);
 			Curses.attroff(Curses.Attributes.Bold);
@@ -637,7 +683,7 @@ namespace Test
 						Nick = "ToXedVirus",
 						Message = text
 					}));
-					ViewPort.Position = ViewPort.MinimumPosition;
+					//ViewPort.Position = ViewPort.MinimumPosition;
 				}
 
 				Entry.AddHistory(text);
@@ -675,12 +721,11 @@ namespace Test
 
 			var irssi = new IrssiControl();
 
-			for (int i = 0; i < 20000; i++) {
+			for (int i = 0; i < 100000; i++) {
 				irssi.ViewPort.Add(new ViewPortEntry(new ViewPortInfo() {
 					DateTime = DateTime.Now,
 					Nick = "ToXedVirus",
-					Message = "A very long test string! " + i
-					//Message = string.Format("{0};{1}", Curses.Cursor.X, Curses.Cursor.Y)
+					Message = str("A very long test string! " + i, i % 10)
 				}));
 			}
 

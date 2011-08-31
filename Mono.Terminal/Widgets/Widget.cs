@@ -133,5 +133,11 @@ namespace Mono.Terminal
 		}
 
 		public bool Invalid { get; protected set; }
+
+		public bool Visible {
+			get {
+				return true;
+			}
+		}
 	}
 }
