@@ -236,6 +236,8 @@ namespace Test
 		public override void SetDim(int x, int y, int w, int h)
 		{
 			base.SetDim(x, y, w, h);
+
+			Invalid = true;
 		}
 
 		public double PageFactor { get; set; }
