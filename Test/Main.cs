@@ -147,7 +147,6 @@ namespace Test
 	public class ViewPortEntry : Widget
 	{
 		public ViewPort ViewPort { get; internal set; }
-		public ViewPortEntry Previous { get; internal set; }
 
 		public string String { get; protected set; }
 
@@ -247,9 +246,6 @@ namespace Test
 			Invalid = true;
 
 			entry.ViewPort = this;
-			if (entries.Last != null) {
-				entry.Previous = entries.Last.Value;
-			}
 
 			entries.AddLast(entry);
 		}
