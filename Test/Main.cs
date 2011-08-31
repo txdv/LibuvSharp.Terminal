@@ -54,13 +54,42 @@ namespace Test
 
 	public class ColorString
 	{
+		public string String { get; protected set; }
+		public int Length { get; protected set; }
+
+		public ColorString(string str)
+		{
+			String = str;
+			Length = CalculateLength(str);
+		}
+
+		public void Draw(Action<char> callback)
+		{
+			ColorString.Draw(String, callback);
+		}
+
+		public void Draw()
+		{
+			ColorString.Draw(String);
+		}
+
+		public void Draw(Widget widget)
+		{
+			ColorString.Draw(widget, String);
+		}
+
+		public void Draw(Widget widget, int x, int y, int w, int h)
+		{
+			ColorString.Draw(widget, String, x, y, w, h);
+		}
+
 		enum DrawStringMode {
 			Normal,
 			ForegroundColor,
 			Background
 		}
 
-		public static int Length(string str)
+		public static int CalculateLength(string str)
 		{
 			DrawStringMode mode = DrawStringMode.Normal;
 			int len = 0;
@@ -83,14 +112,7 @@ namespace Test
 			return len;
 		}
 
-		public static int DrawString(string str)
-		{
-			return DrawString(str, delegate (char ch) {
-				Curses.Add(ch);
-			});
-		}
-
-		public static int DrawString(string str, Action<char> callback)
+		public static int Draw(string str, Action<char> callback)
 		{
 			int n = 0;
 
@@ -142,9 +164,59 @@ namespace Test
 			}
 			return n;
 		}
+
+		public static int Draw(string str)
+		{
+			return Draw(str, delegate (char ch) {
+				Curses.Add(ch);
+			});
+		}
+
+		public static int Draw(Widget widget, string str)
+		{
+			int i = 0;
+			int x = 0, y = 0;
+			return Draw(str, delegate (char ch) {
+				widget.Set(x, y, ch);
+				x++;
+				if (x >= widget.Width) {
+					x = 0;
+					y++;
+				}
+				i++;
+			});
+		}
+
+		public static int Draw(Widget widget, string str, int x, int y, int w, int h)
+		{
+			//x = Math.Max(widget.X, x);
+			//y = Math.Max(widget.Y, y);
+			//w = Math.Min(widget.Width, w);
+			//h = Math.Min(widget.Height, h);
+
+			int xi = 0, yi = 0;
+
+			return Draw(str, delegate (char ch) {
+				widget.Set(xi + x, yi + y, ch);
+
+				xi++;
+				if (xi >= w) {
+					xi = 0;
+					yi++;
+				}
+			});
+		}
 	}
 
-	public class ViewPortEntry : Widget
+	interface IViewPortEntry
+	{
+		ViewPort ViewPort { get; }
+		ViewPortInfo Info { get; }
+
+		int CalculateHeight(int width);
+	}
+
+	public class ViewPortEntry : Widget, IViewPortEntry
 	{
 		public ViewPort ViewPort { get; internal set; }
 
@@ -153,33 +225,25 @@ namespace Test
 		public ViewPortInfo Info { get; protected set; }
 		public ViewPortEntry(ViewPortInfo info)
 		{
+			Mode = true;
+
 			Info = info;
 
 			int AccentColor = 202;
 
-			String = GetTime(AccentColor) + ' ' + GetNick(AccentColor, '+') + "\x0000255  " + Info.Message;
+			String = string.Format("{0} {1}\x0000255  ", DecorateTime(AccentColor), DecorateNick(AccentColor, '+'));
 		}
 
 		public int CalculateHeight(int width)
 		{
-			return (int)Math.Ceiling((double)ColorString.Length(String) / width);
-		}
-
-		public int CalculateFillout(int width)
-		{
-			return (CalculateHeight(width) * width) - ColorString.Length(String);
-		}
-
-		string Empty(int length)
-		{
-			string ret = string.Empty;
-			for (int i = 0; i < length; i++) {
-				ret += " ";
+			if (Mode) {
+				return (int)Math.Ceiling((double)ColorString.CalculateLength(Info.Message) / (width - ColorString.CalculateLength(String)));
+			} else {
+				return (int)Math.Ceiling((double)(ColorString.CalculateLength(String) + ColorString.CalculateLength(Info.Message)) / width);
 			}
-			return ret;
 		}
 
-		public string GetTime(int color)
+		public string DecorateTime(int color)
 		{
 			return string.Format("\x0000241 (\x0000255 {1}\x0000{0} :\x0000255 {2}\x0000{0} :\x0000255 {3}am\x0000241 )",
 				color,
@@ -189,7 +253,7 @@ namespace Test
 			);
 		}
 
-		public string GetNick(int color, char op) {
+		public string DecorateNick(int color, char op) {
 			return string.Format("\x0000241 (\x0000{0} {1}\x0000255 {2}\x0000241 )",
 				color,
 				op,
@@ -197,25 +261,22 @@ namespace Test
 			);
 		}
 
+		public bool Mode { get; set; }
+
 		public override void Redraw()
 		{
 			Fill(' ');
 
 			Move(0, 0);
 
-			string res = String + string.Format("\x0000{0} ", 255) + Empty(CalculateFillout(Width));
-
-			int i = 0;
-			int x = 0, y = 0;
-			ColorString.DrawString(res, delegate (char ch) {
-				Set(x, y, ch);
-				x++;
-				if (x >= Width) {
-					x = 0;
-					y++;
-				}
-				i++;
-			});
+			if (Mode) {
+				ColorString.Draw(this, String);
+				int prefix = ColorString.CalculateLength(String);
+				ColorString.Draw(this, Info.Message, prefix, 0, Width - prefix, Height);
+			} else {
+				ColorString.Draw(String);
+				ColorString.Draw(Info.Message);
+			}
 		}
 
 		public int Length { get; protected set; }
