@@ -1,0 +1,90 @@
+using System;
+using System.Runtime.InteropServices;
+
+namespace Mono.Interop
+{
+	enum ModuleFlags : int
+	{
+		LAZY = 1,
+		NOW = 2,
+		BINDING_MASK = 3,
+		NOLOAD = 4,
+		DEEPBIND = 8,
+		GLOBAL = 0x00100,
+		LOCAL = 0,
+		NODELETE = 0x01000,
+	}
+
+	public class Module
+	{
+		private IntPtr handle = IntPtr.Zero;
+
+		public Module(string filename)
+			: this(dlopen(filename, ModuleFlags.LAZY))
+		{
+		}
+
+		internal Module(IntPtr ptr)
+		{
+			if (ptr == IntPtr.Zero) {
+				throw new Exception(dlerror());
+			}
+
+			handle = ptr;
+		}
+
+		public IntPtr GetSymbol(string symbolName)
+		{
+			EmptyErrors();
+			IntPtr ptr = dlsym(handle, symbolName);
+			CheckError();
+			return ptr;
+		}
+
+		public bool TryGetSymbol(string symbolName, out IntPtr ptr)
+		{
+			try {
+				ptr = GetSymbol(symbolName);
+				return true;
+			} catch {
+				return false;
+			}
+		}
+
+		void EmptyErrors()
+		{
+			while (GetLastError() != null) { }
+		}
+
+		string GetLastError()
+		{
+			return dlerror();
+		}
+
+		void CheckError()
+		{
+			string err = GetLastError();
+			if (err != null) {
+				throw new Exception(err);
+			}
+		}
+
+		[DllImport("__Internal")]
+		private static extern IntPtr dlopen(string filename, ModuleFlags flag);
+
+		[DllImport("__Internal", EntryPoint = "dlopen")]
+		private static extern IntPtr dlopen2(IntPtr filename, ModuleFlags flag);
+
+		[DllImport("__Internal")]
+		private static extern string dlerror();
+
+		[DllImport("__Internal")]
+		private static extern IntPtr dlsym(IntPtr handle, string symbol);
+
+		[DllImport("__Internal")]
+		private static extern int dlclose(IntPtr handle);
+	}
+
+
+}
+

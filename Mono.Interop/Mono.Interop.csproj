@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{80BE055C-768D-4AC5-8737-427E84895C3F}</ProjectGuid>
+    <ProjectGuid>{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Mono.Terminal</RootNamespace>
-    <AssemblyName>Mono.Terminal</AssemblyName>
+    <RootNamespace>Mono.Interop</RootNamespace>
+    <AssemblyName>Mono.Interop</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,7 +20,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -29,36 +28,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="IKeyDispatcher.cs" />
-    <Compile Include="Poll.cs" />
-    <Compile Include="Application.cs" />
-    <Compile Include="Widgets\Widget.cs" />
-    <Compile Include="Widgets\Containers\Container.cs" />
-    <Compile Include="Widgets\Containers\FullsizeContainer.cs" />
-    <Compile Include="Widgets\Button.cs" />
-    <Compile Include="Curses\Curses.cs" />
-    <Compile Include="Curses\ColorPair.cs" />
-    <Compile Include="Curses\Window.cs" />
-    <Compile Include="Widgets\Containers\Box.cs" />
+    <Compile Include="Module.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Widgets\" />
-    <Folder Include="Widgets\Containers\" />
-    <Folder Include="Curses\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Mono.Interop\Mono.Interop.csproj">
-      <Project>{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}</Project>
-      <Name>Mono.Interop</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

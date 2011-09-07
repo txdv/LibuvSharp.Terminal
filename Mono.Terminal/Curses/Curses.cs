@@ -1,22 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using GLib;
+using Mono.Interop;
 
 namespace Mono.Terminal
 {
 	unsafe public class Curses
 	{
-		internal static GModule Module { get; set; }
+		internal static Module Module { get; set; }
 
 		internal static void Init()
 		{
-			Module = GModule.Open(null, GModuleFlags.Lazy);
+			Module = new Module(null);
 			IntPtr ptr;
-			Module.Symbol("COLORS", out ptr);
+			Module.TryGetSymbol("COLORS", out ptr);
 			colors = (int *)ptr.ToPointer();
 
-			Module.Symbol("COLOR_PAIRS", out ptr);
+			Module.TryGetSymbol("COLOR_PAIRS", out ptr);
 			color_pairs = (int *)ptr.ToPointer();
 
 			Terminal.Init();
@@ -93,16 +93,16 @@ namespace Mono.Terminal
 			public static void Init()
 			{
 				IntPtr ptr;
-				Module.Symbol("LINES", out ptr);
+				Module.TryGetSymbol("LINES", out ptr);
 				height = (int *)ptr.ToPointer();
 
-				Module.Symbol("COLS", out ptr);
+				Module.TryGetSymbol("COLS", out ptr);
 				width = (int *)ptr.ToPointer();
 
-				Module.Symbol("ospeed", out ptr);
+				Module.TryGetSymbol("ospeed", out ptr);
 				speed = (short *)ptr.ToPointer();
 
-				Module.Symbol("ttytype", out ptr);
+				Module.TryGetSymbol("ttytype", out ptr);
 				ttytype = (sbyte *)ptr.ToPointer();
 			}
 

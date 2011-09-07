@@ -15,13 +15,13 @@ namespace Mono.Terminal
 			Curses.Init();
 			IntPtr ptr;
 
-			Curses.Module.Symbol("stdscr", out ptr);
+			Curses.Module.TryGetSymbol("stdscr", out ptr);
 			Standard = new Window(new IntPtr(*(int *)ptr.ToPointer()));
 
-			Curses.Module.Symbol("newscr", out ptr);
+			Curses.Module.TryGetSymbol("newscr", out ptr);
 			New = new Window(new IntPtr(*(int *)ptr.ToPointer()));
 
-			Curses.Module.Symbol("curscr", out ptr);
+			Curses.Module.TryGetSymbol("curscr", out ptr);
 			Current = new Window(new IntPtr(*(int *)ptr.ToPointer()));
 		}
 
