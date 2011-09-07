@@ -11,7 +11,7 @@ namespace Mono.Terminal
 
 		internal static void Init()
 		{
-			Module = new Module(null);
+			Module = Module.Open();
 			IntPtr ptr;
 			Module.TryGetSymbol("COLORS", out ptr);
 			colors = (int *)ptr.ToPointer();

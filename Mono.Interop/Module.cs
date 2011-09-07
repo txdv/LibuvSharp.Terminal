@@ -17,9 +17,29 @@ namespace Mono.Interop
 
 	public class Module
 	{
+		public static Module Open()
+		{
+			return new Module(null);
+		}
+
+		public static Module Open(string filename)
+		{
+			if (filename == null) {
+			}
+
+			string fullfilename = null;
+			if (Environment.OSVersion.Platform == PlatformID.Unix) {
+				fullfilename = string.Format("lib{0}.so", filename);
+			} else {
+				throw new Exception("Platform not supported");
+			}
+
+			return new Module(fullfilename);
+		}
+
 		private IntPtr handle = IntPtr.Zero;
 
-		public Module(string filename)
+		private Module(string filename)
 			: this(dlopen(filename, ModuleFlags.LAZY))
 		{
 		}
@@ -51,17 +71,17 @@ namespace Mono.Interop
 			}
 		}
 
-		void EmptyErrors()
+		private void EmptyErrors()
 		{
 			while (GetLastError() != null) { }
 		}
 
-		string GetLastError()
+		private string GetLastError()
 		{
 			return dlerror();
 		}
 
-		void CheckError()
+		private void CheckError()
 		{
 			string err = GetLastError();
 			if (err != null) {
