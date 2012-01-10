@@ -1,0 +1,4 @@
+*.pidb
+*.swp
+bin
+obj
