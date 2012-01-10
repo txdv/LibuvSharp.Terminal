@@ -36,12 +36,20 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Filler.cs" />
+    <Compile Include="Entry.cs" />
+    <Compile Include="ViewPort.cs" />
+    <Compile Include="IrssiControl.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\Mono.Terminal\Mono.Terminal.csproj">
       <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
       <Name>Mono.Terminal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Mono.Interop\Mono.Interop.csproj">
+      <Project>{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}</Project>
+      <Name>Mono.Interop</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
