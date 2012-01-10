@@ -109,6 +109,13 @@ namespace Mono.Terminal
 			}
 		}
 
+		public void Set(int x, int y, int c)
+		{
+			if (Move(x, y)) {
+				Curses.Add(c);
+			}
+		}
+
 		public void Set(int x, int y, char c)
 		{
 			if (Move(x, y)) {
@@ -120,6 +127,25 @@ namespace Mono.Terminal
 		{
 			if (Move(x, y)) {
 				Curses.Add(str);
+			}
+		}
+
+		public void Set(int x, int y, int w, int h, string str)
+		{
+			int xi = x;
+			int yi = y;
+			for (int i = 0; i < str.Length; i++) {
+				if (Move(xi, yi)) {
+					Curses.Add(str[i]);
+				}
+
+				if (xi >= w) {
+					if (yi >= h) {
+						return;
+					}
+					xi = x;
+					yi++;
+				}
 			}
 		}
 		
