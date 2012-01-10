@@ -43,6 +43,19 @@ namespace Mono.Terminal
 			return col;
 		}
 
+		public static ColorPair From(int foreground, int background)
+		{
+			if (foreground < -1 || foreground >= Curses.Colors) {
+				throw new ArgumentException("foreground");
+			} else if (background < -1 || background >= Curses.Colors) {
+				throw new ArgumentException("background");
+			}
+
+			unchecked {
+				return From((ushort)foreground, (ushort)background);
+			}
+		}
+
 		public ushort Foreground { get; set; }
 		public ushort Background { get; set; }
 		public short Pair { get; set; }
