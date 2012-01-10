@@ -28,6 +28,11 @@ namespace Mono.Terminal
 			ColorString.Draw(widget, String);
 		}
 
+		public void Draw(Widget widget, int x, int y)
+		{
+			Draw(widget, x, y, widget.Width, widget.Height);
+		}
+
 		public void Draw(Widget widget, int x, int y, int w, int h)
 		{
 			ColorString.Draw(widget, String, x, y, w, h);
@@ -135,6 +140,11 @@ namespace Mono.Terminal
 				}
 				i++;
 			});
+		}
+
+		public static int Draw(Widget widget, string str, int x, int y)
+		{
+			return Draw(widget, str, x, y, widget.Width, widget.Height);
 		}
 
 		public static int Draw(Widget widget, string str, int x, int y, int w, int h)

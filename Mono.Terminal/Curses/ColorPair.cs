@@ -56,6 +56,12 @@ namespace Mono.Terminal
 		{
 			return (Pair == cp.Pair) && ColorEquals(cp);
 		}
+
+		public static void ReleaseAll()
+		{
+			colors = new ColorPair[1000, 1000];
+			Count = 0;
+		}
 	}
 }
 

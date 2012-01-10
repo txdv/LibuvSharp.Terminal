@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Interop", "Mono.Interop\Mono.Interop.csproj", "{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTest", "ColorTest\ColorTest.csproj", "{811C48CA-B919-430C-9C54-1F422A365515}"
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +22,10 @@ Global
 		{80BE055C-768D-4AC5-8737-427E84895C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80BE055C-768D-4AC5-8737-427E84895C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{80BE055C-768D-4AC5-8737-427E84895C3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811C48CA-B919-430C-9C54-1F422A365515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811C48CA-B919-430C-9C54-1F422A365515}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -38,6 +43,13 @@ Global
 		$1.scope = text/plain
 		$0.StandardHeader = $2
 		$2.Text = 
-		$2.IncludeInNewFiles = True
+		$2.inheritsSet = Apache2License
+		$0.TextStylePolicy = $3
+		$3.inheritsSet = null
+		$3.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $4
+		$4.inheritsSet = Mono
+		$4.inheritsScope = text/x-csharp
+		$4.scope = text/x-csharp
 	EndGlobalSection
 EndGlobal
