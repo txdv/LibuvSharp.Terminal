@@ -49,6 +49,7 @@
     <Compile Include="Curses\Window.cs" />
     <Compile Include="Widgets\Containers\Box.cs" />
     <Compile Include="ColorString.cs" />
+    <Compile Include="ACS.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
