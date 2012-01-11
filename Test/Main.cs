@@ -13,8 +13,6 @@ namespace Test
 		{
 			Application.Init();
 
-			Loop loop = new Loop();
-			PollKeyDispatcher pkd = new PollKeyDispatcher(loop);
 
 			var irssi = new IrssiControl();
 
@@ -26,7 +24,7 @@ namespace Test
 				}));
 			}
 
-			Application.Run(pkd, irssi);
+			Application.Run(new LibuvKeyDispatcher(), irssi);
 		}
 
 		public static string str(string str, int n)

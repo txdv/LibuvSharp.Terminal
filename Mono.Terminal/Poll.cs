@@ -61,29 +61,49 @@ namespace Mono.Terminal.Poll
 	}
 
 	public class PollKeyDispatcher : IKeyDispatcher
-
 	{
-		Action<int> callback;
+		public bool Running { get; protected set; }
 
 		public Loop Loop { get; set; }
 
+		public PollKeyDispatcher()
+			: this(new Loop())
+		{
+		}
+
 		public PollKeyDispatcher(Loop loop)
 		{
+			Running = true;
+
 			Loop = loop;
 			var watcher = new Watcher(0);
 			watcher.ReadEvent += delegate {
 				int ch = Curses.getch();
-				if (callback != null) {
-					callback(ch);
+				if (KeyPress != null) {
+					KeyPress(ch);
 				}
 			};
 			Loop.Add(watcher);
 		}
 
-		public void Dispatch(int timeout, Action<int> callback)
+		public event Action<int> KeyPress;
+
+		public void Run(int timeout)
 		{
-			this.callback = callback;
-			Loop.Dispatch(timeout);
+			while (Running) {
+				Loop.Dispatch(timeout);
+			}
 		}
-	}}
+
+		public void Run()
+		{
+			Run(0);
+		}
+
+		public void Finish()
+		{
+			Running = false;
+		}
+	}
+}
 

@@ -56,19 +56,18 @@ namespace Mono.Terminal
 			container.SetCursorPosition();
 			Curses.Refresh();
 
-			bool done = false;
-			while (!done && !Exit) {
-				keyDispatcher.Dispatch(Timeout, delegate (int key) {
-					if (QuitKey == key) {
-						done = true;
-					} else {
-						container.ProcessKey(key);
-						container.Redraw();
-						container.SetCursorPosition();
-						Curses.Refresh();
-					}
-				});
-			}
+			keyDispatcher.KeyPress += (key) => {
+				if (QuitKey == key) {
+					keyDispatcher.Finish();
+				} else {
+					container.ProcessKey(key);
+					container.Redraw();
+					container.SetCursorPosition();
+					Curses.Refresh();
+				}
+			};
+
+			keyDispatcher.Run();
 
 
 			if (colors != null) {
