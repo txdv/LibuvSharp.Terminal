@@ -60,6 +60,9 @@ namespace Mono.Terminal
 				if (QuitKey == key) {
 					keyDispatcher.Finish();
 				} else {
+					if (key == Curses.Key.Resize) {
+						container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
+					}
 					container.ProcessKey(key);
 					container.Redraw();
 					container.SetCursorPosition();

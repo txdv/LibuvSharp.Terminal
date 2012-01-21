@@ -86,6 +86,7 @@ namespace Mono.Terminal
 			public const int Delete   = unchecked((int)0x14a);
 			public const int Insert   = unchecked((int)0x14b);
 
+			public const int Resize   = unchecked((int)0x19a);
 		}
 
 		public static class Terminal
@@ -360,6 +361,9 @@ namespace Mono.Terminal
 
 		[DllImport("ncursesw")]
 		public static extern int COLOR_PAIR(int z);
+
+		[DllImport("ncursesw")]
+		public static extern int resizeterm(int y, int x);
 	}
 }
 
