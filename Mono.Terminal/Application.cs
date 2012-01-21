@@ -57,7 +57,7 @@ namespace Mono.Terminal
 			Curses.Refresh();
 
 			keyDispatcher.KeyPress += (key) => {
-				if (QuitKey == key) {
+				if (key == QuitKey) {
 					keyDispatcher.Finish();
 				} else {
 					if (key == Curses.Key.Resize) {
