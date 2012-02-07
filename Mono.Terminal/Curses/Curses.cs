@@ -239,12 +239,6 @@ namespace Mono.Terminal
 		internal static extern IntPtr initscr();
 
 		[DllImport("ncursesw")]
-		internal static extern int endwin();
-
-		[DllImport("ncursesw")]
-		internal static extern bool isendwin();
-
-		[DllImport("ncursesw")]
 		internal static extern bool noecho();
 
 		[DllImport("ncursesw")]

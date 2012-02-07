@@ -186,7 +186,32 @@ namespace Mono.Terminal
 			}
 		}
 
+		[DllImport("ncursesw")]
+		internal static extern int wgetch(IntPtr window);
 
+		public int getch()
+		{
+			return wgetch(handle);
+		}
+
+		[DllImport("ncursesw")]
+		internal static extern int endwin();
+
+		public static void End()
+		{
+			if (!IsEnd) {
+				endwin();
+			}
+		}
+
+		[DllImport("ncursesw")]
+		internal static extern bool isendwin();
+
+		public static bool IsEnd {
+			get {
+				return isendwin();
+			}
+		}
 	}
 }
 
