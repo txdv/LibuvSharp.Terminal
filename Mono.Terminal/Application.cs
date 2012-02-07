@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Mono.Unix.Native;
+using Manos.IO;
 
 namespace Mono.Terminal
 {
@@ -7,16 +9,13 @@ namespace Mono.Terminal
 	{
 		public static int QuitKey { get; set; }
 		public static int Timeout { get; set; }
-		public static IntPtr Screen { get; protected set; }
 		public static bool Exit { get; set; }
-
-		private static IKeyDispatcher KeyDispatcher { get; set; }
 
 		public static bool Running { get; private set; }
 
 		static Application()
 		{
-			Timeout = 1000;
+			Timeout = -1;
 			QuitKey = 17;
 		}
 
@@ -25,6 +24,13 @@ namespace Mono.Terminal
 		public static void SaveColors()
 		{
 			colors = Curses.Terminal.GetColors();
+		}
+
+		public static void RestoreColors()
+		{
+			if (colors != null) {
+				Curses.Terminal.SetColors(colors);
+			}
 		}
 
 		public static void Init()
@@ -42,12 +48,23 @@ namespace Mono.Terminal
 			Window.Standard.Keypad = true;
 		}
 
-		public static void Run(IKeyDispatcher keyDispatcher, Container container)
+		static Action<int> keyaction;
+
+		public static void Refresh()
+		{
+			if (keyaction != null) {
+				keyaction(-2);
+			}
+		}
+
+		static IStdin stdin;
+		static SignalWatcher sw;
+
+		public static void Run(Context context, Container container)
 		{
 			if (container.CanFocus) {
 				container.HasFocus = true;
 			}
-
 
 			// draw everything and refresh curses
 			container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
@@ -56,9 +73,14 @@ namespace Mono.Terminal
 			container.SetCursorPosition();
 			Curses.Refresh();
 
-			keyDispatcher.KeyPress += (key) => {
+			keyaction = (key) => {
 				if (key == QuitKey) {
-					keyDispatcher.Finish();
+					context.Stop();
+					Window.End();
+					System.Diagnostics.Process.GetCurrentProcess().Kill();
+				} else if (key == -2) {
+					container.Redraw();
+					Curses.Refresh();
 				} else {
 					if (key == Curses.Key.Resize) {
 						container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
@@ -70,18 +92,27 @@ namespace Mono.Terminal
 				}
 			};
 
-			keyDispatcher.Run();
+			stdin = context.OpenStdin();
+			stdin.Ready(() => {
+				keyaction(Curses.getch());
+			});
 
+			sw = new SignalWatcher(context, Signum.SIGWINCH , () => {
+				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
+				keyaction(-2);
+			});
+
+			sw.Start();
 
 			if (colors != null) {
 				Curses.Terminal.SetColors(colors);
 			}
 
+			context.Start();
 
-			Curses.endwin();
+			Window.End();
 			Running = false;
 		}
-
 	}
 }
 

@@ -34,15 +34,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="Libuv, Version=1.0.4393.5568, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Manos.IO, Version=0.1.3.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\libs\Libuv.dll</HintPath>
+      <HintPath>..\..\libs\Manos.IO.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="IKeyDispatcher.cs" />
-    <Compile Include="Poll.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Widgets\Widget.cs" />
     <Compile Include="Widgets\Containers\Container.cs" />
@@ -54,7 +52,9 @@
     <Compile Include="Widgets\Containers\Box.cs" />
     <Compile Include="ColorString.cs" />
     <Compile Include="ACS.cs" />
-    <Compile Include="LibuvKeyDispatcher.cs" />
+    <Compile Include="ApplicationContainer.cs" />
+    <Compile Include="AsyncWatcher.cs" />
+    <Compile Include="SignalWatcher.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
