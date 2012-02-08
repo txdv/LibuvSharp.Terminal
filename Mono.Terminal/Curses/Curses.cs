@@ -60,6 +60,36 @@ namespace Mono.Terminal
 
 		public static class Key
 		{
+			class Range
+			{
+				public int Key { get; protected set; }
+				public int Start { get; protected set; }
+				public int End { get; protected set; }
+
+				public Range(int key, int start, int end)
+				{
+					Key = key;
+					Start = start;
+					End = end;
+				}
+
+				public bool Fits(int key)
+				{
+					return (Start <= key) && (key <= End);
+				}
+
+				public bool Exclusive(Range r)
+				{
+					if (r.Start < Start) {
+						return r.End < r.Start;
+					} else if (r.End >= End) {
+						return r.Start >= End;
+					} else {
+						return !(r.Start > Start && r.End < End);
+					}
+				}
+			}
+
 			public const int Alt = 0x2000;
 
 			public static bool IsAlt(int key)
@@ -70,6 +100,42 @@ namespace Mono.Terminal
 			public static int KeyAlt(int key)
 			{
 				return key & ~Alt;
+			}
+
+			public static int Escape(int key)
+			{
+				return key & (~Alt);
+			}
+
+			public static bool IsNumber(int key)
+			{
+				key = Escape(key);
+				return true;
+			}
+
+			static Range Get(int key)
+			{
+				foreach (var range in ranges) {
+					if (range.Fits(key)) {
+						return range;
+					}
+				}
+				return null;
+			}
+
+			public static bool Is(int key, int @base)
+			{
+				return Get(key) != null;
+			}
+
+			public static int Base(int key)
+			{
+				var range = Get(key);
+				if (range != null) {
+					return key - range.Start;
+				} else {
+					return -1;
+				}
 			}
 
 			public const int Backspace = 263;
@@ -87,6 +153,63 @@ namespace Mono.Terminal
 			public const int Insert   = unchecked((int)0x14b);
 
 			public const int Resize   = unchecked((int)0x19a);
+
+			public const int MaxKeys  = 511;
+
+			public static string Name(int key)
+			{
+				return new string(keyname(key));
+			}
+
+			[DllImport("ncursesw")]
+			internal static extern sbyte *keyname(int key);
+
+			static int maxKeys = MaxKeys;
+
+			static List<Range> ranges = new List<Range>();
+
+			public static void Register(int key)
+			{
+				Register(key, 0);
+			}
+
+			public static void Register(int key, int start)
+			{
+				Register(key, start, start + 255);
+			}
+
+			static void Register(int key, int start, int end)
+			{
+				ranges.Add(new Range(key, start + maxKeys, end + maxKeys));
+
+				char[] str = new char [] { (char)0, (char)0 };
+				str[0] = (char)key;
+				for (int i = start; i < end; i++) {
+					str[1] = (char)i;
+					define_key(new string(str), maxKeys);
+					maxKeys++;
+				}
+			}
+
+			static public bool IsEscape(int key)
+			{
+				return key > MaxKeys;
+			}
+
+			static public int EscapeKey(int key, out int normalKey)
+			{
+				foreach (var range in ranges) {
+					if (range.Fits(key)) {
+						normalKey = 0;
+						return range.Key;
+					}
+				}
+				normalKey = 0;
+				return -1;
+			}
+
+			[DllImport("ncursesw")]
+			internal static extern int define_key(string ch, int map);
 		}
 
 		public static class Terminal
@@ -358,6 +481,9 @@ namespace Mono.Terminal
 
 		[DllImport("ncursesw")]
 		public static extern int resizeterm(int y, int x);
+
+		[DllImport("ncursesw")]
+		internal static extern int keypad(IntPtr window, bool bf);
 	}
 }
 
