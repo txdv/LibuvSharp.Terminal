@@ -7,6 +7,8 @@ namespace Mono.Terminal
 {
 	public class Application
 	{
+		public static Context Context { get; protected set; }
+
 		public static int QuitKey { get; set; }
 		public static int Timeout { get; set; }
 		public static bool Exit { get; set; }
@@ -62,6 +64,8 @@ namespace Mono.Terminal
 
 		public static void Run(Context context, Container container)
 		{
+			Context = context;
+
 			if (container.CanFocus) {
 				container.HasFocus = true;
 			}
@@ -112,6 +116,8 @@ namespace Mono.Terminal
 
 			Window.End();
 			Running = false;
+
+			Context = null;
 		}
 	}
 }
