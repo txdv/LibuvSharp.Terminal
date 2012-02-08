@@ -1,3 +1,5 @@
+using System;
+
 namespace Mono.Terminal
 {
 	public abstract class Widget
@@ -54,7 +56,6 @@ namespace Mono.Terminal
 
 		public Widget()
 		{
-			Invalid = true;
 		}
 
 		public Widget(int w, int h)
@@ -79,7 +80,32 @@ namespace Mono.Terminal
 
 		public virtual bool HasFocus { get; set; }
 
-		public abstract void Redraw();
+		private bool invalid = false;
+		public virtual bool Invalid {
+			get {
+				return invalid;
+			}
+			set {
+				if (value) {
+					if (Container != null && !Container.Invalid) {
+						Container.Invalid = true;
+					}
+				}
+				invalid = value;
+			}
+		}
+
+		public bool Visible {
+			get {
+				return true;
+			}
+		}
+
+		public virtual void Redraw()
+		{
+			Invalid = false;
+		}
+
 		public virtual bool ProcessKey(int key)
 		{
 			return false;
@@ -115,11 +141,26 @@ namespace Mono.Terminal
 				Curses.Add(c);
 			}
 		}
-
 		public void Set(int x, int y, char c)
 		{
 			if (Move(x, y)) {
 				Curses.Add(c);
+			}
+		}
+		public void Set(int x, int y, int w, int h, int c)
+		{
+			for (int i = x; i < w; i++) {
+				for (int j = y; j < h; j++) {
+					Set(i, j, c);
+				}
+			}
+		}
+		public void Set(int x, int y, int w, int h, char c)
+		{
+			for (int i = x; i < w; i++) {
+				for (int j = y; j < h; j++) {
+					Set(i, j, c);
+				}
 			}
 		}
 
@@ -130,40 +171,97 @@ namespace Mono.Terminal
 			}
 		}
 
-		public void Set(int x, int y, int w, int h, string str)
+		public void Set(int x, int y, int w, int h, string str, out int endx, out int endy)
 		{
 			int xi = x;
 			int yi = y;
 			for (int i = 0; i < str.Length; i++) {
-				if (Move(xi, yi)) {
-					Curses.Add(str[i]);
+				if (str[i] == '\n') {
+					xi = x;
+					yi++;
+					if (yi > h) {
+						endx = xi;
+						endy = yi;
+						return;
+					}
+					continue;
 				}
 
-				if (xi >= w) {
-					if (yi >= h) {
+				Set(xi, yi, str[i]);
+
+				xi++;
+
+				if (xi > w) {
+					if (yi > h) {
+						endx = xi;
+						endy = yi;
 						return;
 					}
 					xi = x;
 					yi++;
 				}
 			}
+			endx = xi;
+			endy = yi;
+		}
+
+		public void Set(int x, int y, int w, int h, string str)
+		{
+			int endx, endy;
+			Set(x, y, w, h, str, out endx, out endy);
 		}
 		
+		public void Fill(int ch)
+		{
+			Fill(0, 0, ch);
+		}
 		public void Fill(char ch)
 		{
-			for (int x = 0; x < Width; x++) {
-				for (int y = 0; y < Height; y++) {
-					Set(x, y, ch);
+			Fill(0, 0, ch);
+		}
+		public void Fill(int x, int y, int ch)
+		{
+			for (int i = x; i < Width; i++) {
+				for (int j = y; j < Height; j++) {
+					Set(i, j, ch);
+				}
+			}
+		}
+		public void Fill(int x, int y, char ch)
+		{
+			for (int i = x; i < Width; i++) {
+				for (int j = y; j < Height; j++) {
+					Set(i, j, ch);
 				}
 			}
 		}
 
-		public bool Invalid { get; protected set; }
+		public void Fill(int x, int y, int w, int h, string str, char ch)
+		{
+			int endx, endy;
+			Set(x, y, w, h, str, out endx, out endy);
+			Fill(endx, endy, ch);
+		}
+		public void Fill(int x, int y, int w, int h, string str)
+		{
+			Fill(x, y, w, h, str, ' ');
+		}
 
-		public bool Visible {
-			get {
-				return true;
-			}
+		public void Fill(int x, int y, string str, char ch)
+		{
+			Fill(x, y, Width, Height, str, ch);
+		}
+		public void Fill(int x, int y, string str)
+		{
+			Fill(x, y, str, ' ');
+		}
+		public void Fill(string str, char ch)
+		{
+			Fill(0, 0, str, ch);
+		}
+		public void Fill(string str)
+		{
+			Fill(str, ' ');
 		}
 	}
 }

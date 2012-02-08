@@ -51,8 +51,12 @@ namespace Mono.Terminal
 
 		public override void Redraw()
 		{
+			base.Redraw();
 			foreach (var element in widgets) {
-				element.Widget.Redraw();
+				var widget = element.Widget;
+				if (widget.Invalid) {
+					widget.Redraw();
+				}
 			}
 		}
 
@@ -98,6 +102,8 @@ namespace Mono.Terminal
 
 		public void Add(Widget widget, Setting setting)
 		{
+			widget.Container = this;
+
 			widgets.Add(new Element() {
 				Widget = widget,
 				Setting = setting

@@ -14,6 +14,7 @@ namespace Mono.Terminal
 		public static bool Exit { get; set; }
 
 		public static bool Running { get; private set; }
+		private static bool Drawing { get; set; }
 
 		static Application()
 		{
@@ -35,7 +36,7 @@ namespace Mono.Terminal
 			}
 		}
 
-		public static void Init()
+		public static void Init(Context context)
 		{
 			Window.Init();
 
@@ -48,23 +49,22 @@ namespace Mono.Terminal
 			Curses.use_default_colors();
 
 			Window.Standard.Keypad = true;
+
+			Context = context;
 		}
 
 		static Action<int> keyaction;
 
-		public static void Refresh()
-		{
-			if (keyaction != null) {
-				keyaction(-2);
-			}
-		}
-
 		static IStdin stdin;
 		static SignalWatcher sw;
 
-		public static void Run(Context context, Container container)
+		public static void Run(Container container)
 		{
-			Context = context;
+			container = new ApplicationContainer(container);
+
+			if (Context == null) {
+				throw new Exception("You have to initialize the application with a context");
+			}
 
 			if (container.CanFocus) {
 				container.HasFocus = true;
@@ -79,40 +79,43 @@ namespace Mono.Terminal
 
 			keyaction = (key) => {
 				if (key == QuitKey) {
-					context.Stop();
+					Context.Stop();
 					Window.End();
 					System.Diagnostics.Process.GetCurrentProcess().Kill();
 				} else if (key == -2) {
 					container.Redraw();
+					container.SetCursorPosition();
 					Curses.Refresh();
 				} else {
 					if (key == Curses.Key.Resize) {
 						container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
 					}
 					container.ProcessKey(key);
-					container.Redraw();
-					container.SetCursorPosition();
-					Curses.Refresh();
 				}
 			};
 
-			stdin = context.OpenStdin();
+			stdin = Context.OpenStdin();
 			stdin.Ready(() => {
 				keyaction(Curses.getch());
 			});
 
-			sw = new SignalWatcher(context, Signum.SIGWINCH , () => {
+			sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
 				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
-				keyaction(-2);
+				container.Redraw();
 			});
 
 			sw.Start();
 
+			Context.CreateIdleWatcher(() => {
+				if (container.Invalid) {
+					keyaction(-2);
+				}
+			}).Start();
+
 			if (colors != null) {
 				Curses.Terminal.SetColors(colors);
 			}
-
-			context.Start();
+			Context.Start();
 
 			Window.End();
 			Running = false;

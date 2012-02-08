@@ -5,7 +5,17 @@ namespace Mono.Terminal
 	public class FullsizeContainer : Container
 	{
 
-		public Widget Widget { get; set; }
+		public Widget widget = null;
+		public Widget Widget {
+			get { return widget; }
+			set {
+				Widget.Container = this;
+				widget = value;
+				widget.SetDim(X, Y, Width, Height);
+				Fill(' ');
+				widget.Redraw();
+			}
+		}
 
 		public FullsizeContainer(Widget widget)
 			: base()
@@ -15,11 +25,11 @@ namespace Mono.Terminal
 			}
 
 			Widget = widget;
-			Widget.Container = this;
 		}
 
 		public override void Redraw()
 		{
+			base.Redraw();
 			Widget.Redraw();
 		}
 

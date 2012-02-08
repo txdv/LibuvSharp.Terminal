@@ -8,9 +8,12 @@ namespace Mono.Terminal
 
 		public new Container Container { get; protected set; }
 
+		public bool Drawing { get; protected set; }
+
 		public ApplicationContainer(Container container)
 		{
 			Container = container;
+			Container.Container = this;
 		}
 
 		public override bool Invalid {
@@ -18,16 +21,18 @@ namespace Mono.Terminal
 				return base.Invalid;
 			}
 			set {
-				if (!value) {
-					Application.Refresh();
+				if (!Drawing && value) {
+					base.Invalid = value;
 				}
-				base.Invalid = value;
 			}
 		}
 
-		public override void Redraw ()
+		public override void Redraw()
 		{
+			Drawing = true;
+			base.Redraw();
 			Container.Redraw();
+			Drawing = false;
 		}
 
 		public override bool ProcessKey(int key)
