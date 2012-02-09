@@ -232,8 +232,8 @@ namespace Mono.Terminal
 		}
 		public void Draw(string str, int x, int y, int w, int h, out int endx, out int endy)
 		{
-			int xi = x;
-			int yi = y;
+			int xi = 0;
+			int yi = 0;
 			for (int i = 0; i < str.Length; i++) {
 
 				/*
@@ -249,24 +249,128 @@ namespace Mono.Terminal
 				}
 				*/
 
-				Set(xi, yi, str[i]);
+				Set(xi + x, yi + y, str[i]);
 
 				xi++;
-
-				if (xi > x + w) {
-					if (yi > y + h) {
-						endx = xi;
-						endy = yi;
-						return;
-					}
-					xi = x;
+				if (xi >= w) {
+					xi = 0;
 					yi++;
+					if (yi >= h) {
+						break;
+					}
 				}
 			}
 
+			endx = xi + x;
+			endy = yi + y;
+		}
 
-			endx = xi;
-			endy = yi;
+		public void FillWords(string[] words)
+		{
+			FillWords(words, ' ');
+		}
+		public void FillWords(string[] words, int x, int y)
+		{
+			FillWords(words, ' ', x, y);
+		}
+		public void FillWords(string[] words, int x, int y, int w, int h)
+		{
+			FillWords(words, ' ', x, y, w, h);
+		}
+		public void FillWords(string[] words, char ch)
+		{
+			FillWords(words, ch, 0, 0);
+		}
+		public void FillWords(string[] words, char ch, int x, int y)
+		{
+			FillWords(words, ch, x, y, Width, Height);
+		}
+		public void FillWords(string[] words, char ch, int x, int y, int w, int h)
+		{
+			int endx, endy;
+			DrawWords(words, ch, x, y, w, h, out endx, out endy);
+		}
+
+		public void DrawWords(string[] words)
+		{
+			DrawWords(words, ' ');
+		}
+		public void DrawWords(string[] words, int x, int y)
+		{
+			DrawWords(words, ' ', x, y);
+		}
+		public void DrawWords(string[] words, int x, int y, int w, int h)
+		{
+			DrawWords(words, ' ', x, y, w, h);
+		}
+		public void DrawWords(string[] words, int x, int y, int w, int h, out int endx, out int endy)
+		{
+			DrawWords(words, ' ', x, y, w, h, out endx, out endy);
+		}
+		public void DrawWords(string[] words, char ch)
+		{
+			DrawWords(words, ch, 0, 0);
+		}
+		public void DrawWords(string[] words, char ch, int x, int y)
+		{
+			DrawWords(words, ch, x, y, Width, Height);
+		}
+		public void DrawWords(string[] words, char ch, int x, int y, int w, int h)
+		{
+			int endx, endy;
+			DrawWords(words, ch, x, y, w, h, out endx, out endy);
+
+		}
+		public void DrawWords(string[] words, char ch, int x, int y, int w, int h, out int endx, out int endy)
+		{
+			int xi = 0;
+			int yi = 0;
+
+			for (int i = 0; i < words.Length; i++) {
+				string word = words[i];
+				// word fits
+				if (xi + word.Length <= w) {
+					Draw(word, xi + x, yi + y, w - xi, 1, out xi, out yi);
+					xi -= x;
+					yi -= yi;
+				} else {
+					// word doesn't fit in one line
+					if (xi != 0) {
+						// if we didn't start at the beginning, fill the rest with
+						// spaces and start freshly
+						for (;xi < w; xi++) {
+							Set(x + xi, y + yi, ch);
+						}
+						xi = 0;
+						yi++;
+					}
+					// just draw for the reminding available height with an already
+					// existing function
+					int height = (int)System.Math.Ceiling((double)word.Length / w);
+					height = System.Math.Min(height, h - yi);
+					Draw(word, xi + x, yi + y, w, height, out xi, out yi);
+					xi -= x;
+					yi -= y;
+					if (xi >= w || yi >= h) {
+						break;
+					}
+				}
+
+				// draw a space
+				Set(xi + x, yi + y, ch);
+
+				xi++;
+				if (xi > w) {
+					xi = 0;
+					yi++;
+					if (yi > h) {
+						break;
+					}
+				}
+			}
+
+			endx = x + xi;
+			endy = y + yi;
 		}
 	}
 }
