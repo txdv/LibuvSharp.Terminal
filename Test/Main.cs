@@ -1,39 +1,31 @@
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Mono.Terminal;
-using Mono.Terminal.Poll;
-using Mono.Interop;
+using Manos.IO;
 
 namespace Test
 {
+	public class Empty : Widget
+	{
+		public Empty(char ch)
+		{
+			Char = ch;
+		}
+
+		public char Char { get; set; }
+		public override void Redraw ()
+		{
+			Fill(Char);
+		}
+	}
+
 	class MainClass
 	{
 		public static void Main(string[] args)
 		{
-			Application.Init();
 
+			Application.Init(Context.Create(Backend.Poll));
 
-			var irssi = new IrssiControl();
-
-			for (int i = 0; i < 100000; i++) {
-				irssi.ViewPort.Add(new ViewPortEntry(new ViewPortInfo() {
-					DateTime = DateTime.Now,
-					Nick = "ToXedVirus",
-					Message = str(string.Format("A very \x0000{0} long\x0000  test string! {0} ", i % 256), i % 10)
-				}));
-			}
-
-			Application.Run(new LibuvKeyDispatcher(), irssi);
-		}
-
-		public static string str(string str, int n)
-		{
-			string ret = string.Empty;
-			for (int i = 0; i < n; i++) {
-				ret += str;
-			}
-			return ret;
+			Application.Run(new FullsizeContainer(new Empty('x')));
 		}
 	}
 }

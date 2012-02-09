@@ -8,6 +8,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.Interop", "Mono.Interop\Mono.Interop.csproj", "{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTest", "ColorTest\ColorTest.csproj", "{811C48CA-B919-430C-9C54-1F422A365515}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,7 +44,7 @@ Global
 		$1.scope = text/plain
 		$0.StandardHeader = $2
 		$2.Text = 
-		$2.inheritsSet = Apache2License
+		$2.IncludeInNewFiles = True
 		$0.TextStylePolicy = $3
 		$3.inheritsSet = null
 		$3.scope = text/x-csharp

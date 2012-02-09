@@ -29,7 +29,7 @@ namespace Mono.Terminal
 			Curses.init_pair(index, foreground, background);
 		}
 
-		private static ColorPair[,] colors = new ColorPair[300, 300];
+		private static ColorPair[,] colors = new ColorPair[256, 256];
 
 		public static ColorPair From(ushort foreground, ushort background)
 		{

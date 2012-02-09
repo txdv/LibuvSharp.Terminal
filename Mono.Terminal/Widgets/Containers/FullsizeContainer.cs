@@ -9,8 +9,8 @@ namespace Mono.Terminal
 		public Widget Widget {
 			get { return widget; }
 			set {
-				Widget.Container = this;
 				widget = value;
+				widget.Container = this;
 				widget.SetDim(X, Y, Width, Height);
 				Fill(' ');
 				widget.Redraw();

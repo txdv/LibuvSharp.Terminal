@@ -1,6 +1,6 @@
 using System;
+using Manos.IO;
 using Mono.Terminal;
-using Mono.Terminal.Poll;
 
 namespace ColorTest
 {
@@ -23,15 +23,29 @@ namespace ColorTest
 			}
 		}
 
+		int TerminalHeight {
+			get {
+				return (int)(Curses.Terminal.Height * 0.8);
+			}
+		}
+
 		public override bool ProcessKey (int key)
 		{
 			switch (key) {
 			case 338:
-				Start += 10;
+				Start += TerminalHeight;
 				Invalid = true;
 				return true;
 			case 339:
-				Start -= 10;
+				Start -= TerminalHeight;
+				Invalid = true;
+				return true;
+			case 259:
+				Start -= 1;
+				Invalid = true;
+				return true;
+			case 258:
+				Start += 1;
 				Invalid = true;
 				return true;
 			default:
@@ -80,18 +94,14 @@ namespace ColorTest
 			}
 		}
 	}
+
 	class MainClass
 	{
 		public static void Main (string[] args)
 		{
-			Application.Init();
+			Application.Init(Context.Create(Backend.Poll));
 
-			Loop loop = new Loop();
-			PollKeyDispatcher pkd = new PollKeyDispatcher(loop);
-
-			FullsizeContainer fsc = new FullsizeContainer(new ColorWidget());
-
-			Application.Run(pkd, fsc);
+			Application.Run(new FullsizeContainer(new ColorWidget()));
 		}
 	}
 }
