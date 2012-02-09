@@ -80,8 +80,6 @@ namespace Mono.Terminal
 			keyaction = (key) => {
 				if (key == QuitKey) {
 					Context.Stop();
-					Window.End();
-					System.Diagnostics.Process.GetCurrentProcess().Kill();
 				} else if (key == -2) {
 					container.Redraw();
 					container.SetCursorPosition();
@@ -115,6 +113,7 @@ namespace Mono.Terminal
 			if (colors != null) {
 				Curses.Terminal.SetColors(colors);
 			}
+
 			Context.Start();
 
 			Window.End();
