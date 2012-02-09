@@ -13,7 +13,7 @@ namespace Mono.Terminal
 			Length = CalculateLength(str);
 		}
 
-		public void Draw(Action<char> callback)
+		public void Draw(Func<char, bool> callback)
 		{
 			ColorString.Each(String, callback);
 		}
@@ -97,7 +97,7 @@ namespace Mono.Terminal
 			return len;
 		}
 
-		public static int Each(string str, Action<char> callback)
+		public static int Each(string str, Func<char, bool> callback)
 		{
 			int n = 0;
 
@@ -112,7 +112,9 @@ namespace Mono.Terminal
 					if (c == '\x0000') {
 						mode = DrawStringMode.ForegroundColor;
 					} else {
-						callback(c);
+						if (!callback(c)) {
+							return n;
+						}
 						n++;
 					}
 					break;
@@ -182,7 +184,11 @@ namespace Mono.Terminal
 				if (xi >= w) {
 					xi = 0;
 					yi++;
+					if (yi >= h) {
+						return false;
+					}
 				}
+				return true;
 			});
 			endx = xi + x;
 			endy = yi + y;
