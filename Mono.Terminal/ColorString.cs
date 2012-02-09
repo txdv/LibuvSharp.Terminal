@@ -15,27 +15,57 @@ namespace Mono.Terminal
 
 		public void Draw(Action<char> callback)
 		{
-			ColorString.Draw(String, callback);
+			ColorString.Each(String, callback);
 		}
 
-		public void Draw()
+		public int Draw(Widget widget)
 		{
-			ColorString.Draw(String);
+			return Draw(widget, String);
+		}
+		public int Draw(Widget widget, out int endx, out int endy)
+		{
+			return Draw(widget, String, out endx, out endy);
+		}
+		public int Draw(Widget widget, int x, int y)
+		{
+			return Draw(widget, String, x, y);
+		}
+		public int Draw(Widget widget, int x, int y, out int endx, out int endy)
+		{
+			return Draw(widget, String, x, y, out endx, out endy);
+		}
+		public int Draw(Widget widget, int x, int y, int w, int h)
+		{
+			return Draw(widget, String, x, y, w, h);
+		}
+		public int Draw(Widget widget, int x, int y, int w, int h, out int endx, out int endy)
+		{
+			return Draw(widget, String, x, y, w, h, out endx, out endy);
 		}
 
-		public void Draw(Widget widget)
+		public int Fill(Widget widget)
 		{
-			ColorString.Draw(widget, String);
+			return Fill(widget, ' ');
 		}
-
-		public void Draw(Widget widget, int x, int y)
+		public int Fill(Widget widget, char ch)
 		{
-			Draw(widget, x, y, widget.Width, widget.Height);
+			return Fill(widget, ch, 0, 0);
 		}
-
-		public void Draw(Widget widget, int x, int y, int w, int h)
+		public int Fill(Widget widget, int x, int y)
 		{
-			ColorString.Draw(widget, String, x, y, w, h);
+			return Fill(widget, ' ', x, y);
+		}
+		public int Fill(Widget widget, char ch, int x, int y)
+		{
+			return Fill(widget, String, ch, x, y, widget.Width - x, widget.Height - y);
+		}
+		public int Fill(Widget widget, int x, int y, int w, int h)
+		{
+			return Fill(widget, ' ', x, y, w, h);
+		}
+		public int Fill(Widget widget, char ch, int x, int y, int w, int h)
+		{
+			return Fill(widget, String, ch, x, y, w, h);
 		}
 
 		enum DrawStringMode {
@@ -67,7 +97,7 @@ namespace Mono.Terminal
 			return len;
 		}
 
-		public static int Draw(string str, Action<char> callback)
+		public static int Each(string str, Action<char> callback)
 		{
 			int n = 0;
 
@@ -120,38 +150,32 @@ namespace Mono.Terminal
 			return n;
 		}
 
-		public static int Draw(string str)
-		{
-			return Draw(str, delegate (char ch) {
-				Curses.Add(ch);
-			});
-		}
-
 		public static int Draw(Widget widget, string str)
 		{
-			int i = 0;
-			int x = 0, y = 0;
-			return Draw(str, delegate (char ch) {
-				widget.Set(x, y, ch);
-				x++;
-				if (x >= widget.Width) {
-					x = 0;
-					y++;
-				}
-				i++;
-			});
-		}
+			return Draw(widget, str, 0, 0);
 
+		}
+		public static int Draw(Widget widget, string str, out int endx, out int endy)
+		{
+			return Draw(widget, str, 0, 0, out endx, out endy);
+		}
 		public static int Draw(Widget widget, string str, int x, int y)
 		{
 			return Draw(widget, str, x, y, widget.Width, widget.Height);
 		}
-
+		public static int Draw(Widget widget, string str, int x, int y, out int endx, out int endy)
+		{
+			return Draw(widget, str, x, y, widget.Width - x, widget.Height - y, out endx, out endy);
+		}
 		public static int Draw(Widget widget, string str, int x, int y, int w, int h)
 		{
+			int endx, endy;
+			return Draw(widget, str, x, y, w, h, out endx, out endy);
+		}
+		public static int Draw(Widget widget, string str, int x, int y, int w, int h, out int endx, out int endy)
+		{
 			int xi = 0, yi = 0;
-
-			return Draw(str, delegate (char ch) {
+			int length = Each(str, delegate (char ch) {
 				widget.Set(xi + x, yi + y, ch);
 
 				xi++;
@@ -160,6 +184,37 @@ namespace Mono.Terminal
 					yi++;
 				}
 			});
+			endx = xi + x;
+			endy = yi + y;
+			return length;
+		}
+
+		public static int Fill(Widget widget, string str)
+		{
+			return Fill(widget, str, ' ', 0, 0);
+		}
+		public static int Fill(Widget widget, string str, char ch)
+		{
+			return Fill(widget, str, ch, 0, 0);
+		}
+		public static int Fill(Widget widget, string str, int x, int y)
+		{
+			return Fill(widget, str, ' ', x, y);
+		}
+		public static int Fill(Widget widget, string str, char ch, int x, int y)
+		{
+			return Fill(widget, str, ch, x, y, widget.Width - x, widget.Height - y);
+		}
+		public static int Fill(Widget widget, string str, int x, int y, int w, int h)
+		{
+			return Fill(widget, str, ' ', x, y, w, h);
+		}
+		public static int Fill(Widget widget, string str, char ch, int x, int y, int w, int h)
+		{
+			int endx, endy;
+			int length = Draw(widget, str, x, y, w, h, out endx, out endy);
+			widget.Fill(ch, x, y, w, h, endx, endy);
+			return length;
 		}
 	}
 

@@ -116,7 +116,7 @@ namespace Mono.Terminal
 			Move(0, 0);
 		}
 
-		protected bool BaseMove(int x, int y)
+		public bool BaseMove(int x, int y)
 		{
 			if ((x >= 0) && (y >= 0) && (x < Curses.Terminal.Width) && (y < Curses.Terminal.Height)) {
 				Window.Standard.Cursor.Move(x, y);
@@ -126,7 +126,7 @@ namespace Mono.Terminal
 			}
 		}
 
-		protected bool Move(int x, int y)
+		public bool Move(int x, int y)
 		{
 			if ((x >= 0) && (y >= 0) && (x < Width) && (y < Height)) {
 				return BaseMove(x + X, y + Y);
@@ -147,35 +147,96 @@ namespace Mono.Terminal
 				Curses.Add(c);
 			}
 		}
-		public void Set(int x, int y, int w, int h, int c)
+
+		public void Fill(int c)
 		{
-			for (int i = x; i < w; i++) {
-				for (int j = y; j < h; j++) {
-					Set(i, j, c);
-				}
-			}
+			Fill(c, 0, 0);
 		}
-		public void Set(int x, int y, int w, int h, char c)
+		public void Fill(int c, int x, int y)
 		{
-			for (int i = x; i < w; i++) {
-				for (int j = y; j < h; j++) {
-					Set(i, j, c);
+			Fill(c, x, y, Width, Height);
+		}
+		public void Fill(int c, int x, int y, int w, int h)
+		{
+			Fill(c, x, y, w, h, x, y);
+		}
+		public void Fill(int c, int x, int y, int w, int h, int startx, int starty)
+		{
+			for (int i = x; i < x + w; i++) {
+				for (int j = y; j < y + h; j++) {
+					if ((i >= startx) && (j == starty)) {
+						Set(i, j, c);
+					} else if (j > starty) {
+						Set(i, j, c);
+					}
 				}
 			}
 		}
 
-		public void Set(int x, int y, string str)
+		public void Fill(char c)
 		{
-			if (Move(x, y)) {
-				Curses.Add(str);
+			Fill(c, 0, 0);
+		}
+		public void Fill(char c, int x, int y)
+		{
+			Fill(c, x, y, Width, Height);
+		}
+		public void Fill(char c, int x, int y, int w, int h)
+		{
+			Fill(c, x, y, w, h, x, y);
+		}
+		public void Fill(char c, int x, int y, int w, int h, int startx, int starty)
+		{
+			for (int i = x; i < x + w; i++) {
+				for (int j = y; j < y + h; j++) {
+					if ((i >= startx) && (j == starty)) {
+						Set(i, j, c);
+					} else if (j > starty) {
+						Set(i, j, c);
+					}
+				}
 			}
 		}
 
-		public void Set(int x, int y, int w, int h, string str, out int endx, out int endy)
+		public void Fill(string str, int x, int y)
+		{
+			Fill(str, ' ', x, y);
+		}
+		public void Fill(string str, char ch, int x, int y)
+		{
+			Fill(str, ch, x, y, Width, Height);
+		}
+		public void Fill(string str, int x, int y, int w, int h)
+		{
+			Fill(str, ' ', x, y, w, h);
+		}
+		public void Fill(string str, char ch, int x, int y, int w, int h)
+		{
+			int endx, endy;
+			Draw(str, x, y, w, h, out endx, out endy);
+			Fill(ch, x, y, w, h, endx, endy);
+		}
+
+		public void Draw(string str)
+		{
+			Draw(str, 0, 0);
+		}
+		public void Draw(string str, int x, int y)
+		{
+			Draw(str, x, y, Width - x, Height - y);
+		}
+		public void Draw(string str, int x, int y, int w, int h)
+		{
+			int endx, endy;
+			Draw(str, x, y, w, h, out endx, out endy);
+		}
+		public void Draw(string str, int x, int y, int w, int h, out int endx, out int endy)
 		{
 			int xi = x;
 			int yi = y;
 			for (int i = 0; i < str.Length; i++) {
+
+				/*
 				if (str[i] == '\n') {
 					xi = x;
 					yi++;
@@ -186,13 +247,14 @@ namespace Mono.Terminal
 					}
 					continue;
 				}
+				*/
 
 				Set(xi, yi, str[i]);
 
 				xi++;
 
-				if (xi > w) {
-					if (yi > h) {
+				if (xi > x + w) {
+					if (yi > y + h) {
 						endx = xi;
 						endy = yi;
 						return;
@@ -201,67 +263,10 @@ namespace Mono.Terminal
 					yi++;
 				}
 			}
+
+
 			endx = xi;
 			endy = yi;
-		}
-
-		public void Set(int x, int y, int w, int h, string str)
-		{
-			int endx, endy;
-			Set(x, y, w, h, str, out endx, out endy);
-		}
-		
-		public void Fill(int ch)
-		{
-			Fill(0, 0, ch);
-		}
-		public void Fill(char ch)
-		{
-			Fill(0, 0, ch);
-		}
-		public void Fill(int x, int y, int ch)
-		{
-			for (int i = x; i < Width; i++) {
-				for (int j = y; j < Height; j++) {
-					Set(i, j, ch);
-				}
-			}
-		}
-		public void Fill(int x, int y, char ch)
-		{
-			for (int i = x; i < Width; i++) {
-				for (int j = y; j < Height; j++) {
-					Set(i, j, ch);
-				}
-			}
-		}
-
-		public void Fill(int x, int y, int w, int h, string str, char ch)
-		{
-			int endx, endy;
-			Set(x, y, w, h, str, out endx, out endy);
-			Fill(endx, endy, ch);
-		}
-		public void Fill(int x, int y, int w, int h, string str)
-		{
-			Fill(x, y, w, h, str, ' ');
-		}
-
-		public void Fill(int x, int y, string str, char ch)
-		{
-			Fill(x, y, Width, Height, str, ch);
-		}
-		public void Fill(int x, int y, string str)
-		{
-			Fill(x, y, str, ' ');
-		}
-		public void Fill(string str, char ch)
-		{
-			Fill(0, 0, str, ch);
-		}
-		public void Fill(string str)
-		{
-			Fill(str, ' ');
 		}
 	}
 }

@@ -61,21 +61,12 @@ namespace ColorTest
 
 		string FillSpace(int number, int max)
 		{
-			int l = max.ToString().Length;
+			int length = max.ToString().Length;
 			string str = number.ToString();
-			while (str.Length < l) {
+			while (str.Length < length) {
 				str = " " + str;
 			}
 			return str;
-		}
-
-		string WhiteSpace(int size)
-		{
-			System.Text.StringBuilder sb = new System.Text.StringBuilder("", size);
-			for (int i = 0; i < size; i++) {
-				sb.Append(" ");
-			}
-			return sb.ToString();
 		}
 
 		public override void Redraw()
@@ -89,8 +80,8 @@ namespace ColorTest
 
 				int y = start + i;
 
-				ColorString.Draw(this, string.Format("\x0000{0} {1}", y, FillSpace(y)), 0, i);
-				ColorString.Draw(this, string.Format("\x0000{0},{0} {1}", y, WhiteSpace(Curses.Terminal.Width)), 4, i);
+				string str = string.Format("\x0000{0} {1} \x0000{0},{0} ", y, FillSpace(y));
+				ColorString.Fill(this, str, 0, i, Width, 1);
 			}
 		}
 	}
@@ -100,7 +91,6 @@ namespace ColorTest
 		public static void Main (string[] args)
 		{
 			Application.Init(Context.Create(Backend.Poll));
-
 			Application.Run(new FullsizeContainer(new ColorWidget()));
 		}
 	}
