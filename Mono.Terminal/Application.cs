@@ -77,8 +77,14 @@ namespace Mono.Terminal
 			container.SetCursorPosition();
 			Curses.Refresh();
 
+			sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
+				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
+				container.Redraw();
+			});
+
 			keyaction = (key) => {
 				if (key == QuitKey) {
+					sw.Stop();
 					Context.Stop();
 				} else if (key == -2) {
 					container.Redraw();
@@ -95,11 +101,6 @@ namespace Mono.Terminal
 			stdin = Context.OpenStdin();
 			stdin.Ready(() => {
 				keyaction(Curses.getch());
-			});
-
-			sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
-				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
-				container.Redraw();
 			});
 
 			sw.Start();
