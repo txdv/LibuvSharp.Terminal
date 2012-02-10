@@ -1,0 +1,3 @@
+[submodule "manos"]
+	path = manos
+	url = https://github.com/txdv/manos/
