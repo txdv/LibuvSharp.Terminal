@@ -4,7 +4,6 @@ namespace Mono.Terminal
 {
 	public class FullsizeContainer : Container
 	{
-
 		public Widget widget = null;
 		public Widget Widget {
 			get { return widget; }
@@ -31,6 +30,14 @@ namespace Mono.Terminal
 		{
 			base.Redraw();
 			Widget.Redraw();
+		}
+
+		public override void ForceRedraw()
+		{
+			base.ForceRedraw();
+			if (widget != null) {
+				widget.ForceRedraw();
+			}
 		}
 
 		public override bool ProcessKey(int key)

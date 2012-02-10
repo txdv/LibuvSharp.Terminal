@@ -35,6 +35,14 @@ namespace Mono.Terminal
 			Drawing = false;
 		}
 
+		public override void ForceRedraw()
+		{
+			base.ForceRedraw();
+			if (Container != null) {
+				Container.ForceRedraw();
+			}
+		}
+
 		public override bool ProcessKey(int key)
 		{
 			return Container.ProcessKey(key);

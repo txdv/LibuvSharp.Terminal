@@ -33,6 +33,15 @@ namespace Mono.Terminal
 		{
 		}
 
+		public override void ForceRedraw()
+		{
+			base.ForceRedraw();
+			foreach (var element in widgets) {
+				var widget = element.Widget;
+				widget.ForceRedraw();
+			}
+		}
+
 		public override bool ProcessKey(int key)
 		{
 			if (CurrentFocus != null) {

@@ -88,7 +88,7 @@ namespace Mono.Terminal
 
 			sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
 				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
-				container.Redraw();
+				keyaction(Curses.Key.Resize);
 			});
 
 			keyaction = (key) => {
@@ -99,10 +99,13 @@ namespace Mono.Terminal
 					container.Redraw();
 					container.SetCursorPosition();
 					Curses.Refresh();
+				} else if (key == Curses.Key.Resize) {
+					container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
+					container.ProcessKey(Curses.Key.Resize);
+					container.ForceRedraw();
+					container.SetCursorPosition();
+					Curses.Refresh();
 				} else {
-					if (key == Curses.Key.Resize) {
-						container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
-					}
 					container.ProcessKey(key);
 				}
 			};

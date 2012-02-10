@@ -106,6 +106,11 @@ namespace Mono.Terminal
 			Invalid = false;
 		}
 
+		public virtual void ForceRedraw()
+		{
+			Redraw();
+		}
+
 		public virtual bool ProcessKey(int key)
 		{
 			return false;
