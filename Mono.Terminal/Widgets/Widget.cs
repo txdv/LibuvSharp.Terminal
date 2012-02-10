@@ -198,6 +198,10 @@ namespace Mono.Terminal
 			}
 		}
 
+		public void Fill(string str)
+		{
+			Fill(str, ' ', 0, 0);
+		}
 		public void Fill(string str, int x, int y)
 		{
 			Fill(str, ' ', x, y);
