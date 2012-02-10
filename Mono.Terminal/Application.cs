@@ -53,6 +53,15 @@ namespace Mono.Terminal
 			Context = context;
 		}
 
+		static void OnEnd()
+		{
+			if (End != null) {
+				End();
+			}
+		}
+
+		public static Action End;
+
 		static Action<int> keyaction;
 
 		static IStdin stdin;
@@ -116,6 +125,8 @@ namespace Mono.Terminal
 			}
 
 			Context.Start();
+			Context.Dispose();
+			OnEnd();
 
 			Window.End();
 			Running = false;
