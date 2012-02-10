@@ -76,6 +76,11 @@ namespace Mono.Terminal
 			colors = new ColorPair[257, 257];
 			Count = 0;
 		}
+
+		public override string ToString()
+		{
+			return string.Format ("\x0000{0},{1} ", Foreground, Background);
+		}
 	}
 }
 
