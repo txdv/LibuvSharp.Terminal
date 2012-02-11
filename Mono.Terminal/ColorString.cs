@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace Mono.Terminal
 {
@@ -221,6 +222,31 @@ namespace Mono.Terminal
 			int length = Draw(widget, str, x, y, w, h, out endx, out endy);
 			widget.Fill(ch, x, y, w, h, endx, endy);
 			return length;
+		}
+
+		public static ColorString Escape(string str, Func<char, ColorPair> exchange)
+		{
+			if (str == null) {
+				return null;
+			} else if (str.Length == 0) {
+				return null;
+			}
+
+			char ch = str[0];
+			ColorPair current = exchange(ch);
+			StringBuilder sb = new StringBuilder(current.ToString());
+			sb.Append(current);
+			sb.Append(ch);
+			for (int i = 1; i < str.Length; i++) {
+				ch = str[i];
+				ColorPair next = exchange(ch);
+				if (current != next) {
+					sb.Append(next.ToString());
+					current = next;
+				}
+				sb.Append(ch);
+			}
+			return new ColorString(sb.ToString());
 		}
 	}
 
