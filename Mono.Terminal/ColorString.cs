@@ -248,6 +248,11 @@ namespace Mono.Terminal
 			}
 			return new ColorString(sb.ToString());
 		}
+
+		public static void Finish()
+		{
+			Curses.attron(ColorPair.From(-1, -1).Attribute);
+		}
 	}
 
 }
