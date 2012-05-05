@@ -1,6 +1,6 @@
 using System;
-using Mono.Terminal;
-using Manos.IO;
+using LibuvSharp;
+using LibuvSharp.Terminal;
 
 namespace Test
 {
@@ -23,7 +23,7 @@ namespace Test
 		public static void Main(string[] args)
 		{
 
-			Application.Init(Context.Create(Backend.Poll));
+			Application.Init();
 
 			Application.Run(new FullsizeContainer(new Empty('x')));
 		}

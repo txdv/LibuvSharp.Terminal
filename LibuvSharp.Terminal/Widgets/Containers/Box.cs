@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public abstract class Box : Container, IEnumerable<Widget>
 	{

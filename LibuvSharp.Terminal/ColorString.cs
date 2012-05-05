@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public class ColorString
 	{

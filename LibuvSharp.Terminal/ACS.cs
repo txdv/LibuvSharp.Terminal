@@ -1,4 +1,4 @@
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public static class ACS
 	{

@@ -1,8 +1,7 @@
 using System;
-using Manos.IO;
 using System.Collections.Generic;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public class AsyncWatcher<T> : IBaseWatcher
 	{

@@ -1,6 +1,6 @@
 using System;
-using Manos.IO;
-using Mono.Terminal;
+using LibuvSharp;
+using LibuvSharp.Terminal;
 
 namespace ColorTest
 {
@@ -90,7 +90,7 @@ namespace ColorTest
 	{
 		public static void Main (string[] args)
 		{
-			Application.Init(Context.Create(Backend.Poll));
+			Application.Init();
 			Application.Run(new FullsizeContainer(new ColorWidget()));
 		}
 	}

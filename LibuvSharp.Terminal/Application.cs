@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using Mono.Unix.Native;
-using Manos.IO;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public class Application
 	{
-		public static Context Context { get; protected set; }
+		public static Loop Loop { get; protected set; }
 
 		public static int QuitKey { get; set; }
 		public static int Timeout { get; set; }
@@ -36,7 +34,12 @@ namespace Mono.Terminal
 			}
 		}
 
-		public static void Init(Context context)
+		public static void Init()
+		{
+			Init(Loop.Default);
+		}
+
+		public static void Init(Loop loop)
 		{
 			Window.Init();
 
@@ -50,7 +53,7 @@ namespace Mono.Terminal
 
 			Window.Standard.Keypad = true;
 
-			Context = context;
+			Loop = loop;
 		}
 
 		static void OnEnd()
@@ -64,14 +67,15 @@ namespace Mono.Terminal
 
 		static Action<int> keyaction;
 
-		static IStdin stdin;
-		static SignalWatcher sw;
+		static Poll stdin;
+		//static SignalWatcher sw;
+
 
 		public static void Run(Container container)
 		{
 			container = new ApplicationContainer(container);
 
-			if (Context == null) {
+			if (Loop == null) {
 				throw new Exception("You have to initialize the application with a context");
 			}
 
@@ -86,15 +90,24 @@ namespace Mono.Terminal
 			container.SetCursorPosition();
 			Curses.Refresh();
 
-			sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
+			/*sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
 				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
 				keyaction(Curses.Key.Resize);
-			});
+			});*/
+
+			var idle = new Idle(Loop);
 
 			keyaction = (key) => {
 				if (key == QuitKey) {
-					sw.Stop();
-					Context.Stop();
+					if (stdin != null) {
+						stdin.Close();
+						stdin = null;
+					}
+
+					if (idle != null) {
+						idle.Stop();
+						idle.Close();
+					}
 				} else if (key == -2) {
 					container.Redraw();
 					container.SetCursorPosition();
@@ -110,31 +123,29 @@ namespace Mono.Terminal
 				}
 			};
 
-			stdin = Context.OpenStdin();
-			stdin.Ready(() => {
+			stdin = new Poll(Loop, 0);
+			stdin.Start(PollEvent.Read, (_) => {
 				keyaction(Curses.getch());
 			});
 
-			sw.Start();
-
-			Context.CreateIdleWatcher(() => {
+			idle.Start((_) => {
 				if (container.Invalid) {
 					keyaction(-2);
 				}
-			}).Start();
+			});
+			//sw.Start();
 
 			if (colors != null) {
 				Curses.Terminal.SetColors(colors);
 			}
 
-			Context.Start();
-			Context.Dispose();
+			Loop.Run();
 			OnEnd();
 
 			Window.End();
 			Running = false;
 
-			Context = null;
+			Loop = null;
 		}
 	}
 }

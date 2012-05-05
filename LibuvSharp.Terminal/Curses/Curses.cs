@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Mono.Interop;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	unsafe public class Curses
 	{
-		internal static Module Module { get; set; }
+		internal static DynamicLibrary Module { get; set; }
 
 		internal static void Init()
 		{
-			Module = Module.Open();
+			Module = DynamicLibrary.Open();
 			IntPtr ptr;
 			Module.TryGetSymbol("COLORS", out ptr);
 			colors = (int *)ptr.ToPointer();

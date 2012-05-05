@@ -3,13 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{AE5C3C9C-413E-4E83-ADFE-8F92EC57ACB8}</ProjectGuid>
+    <ProjectGuid>{80BE055C-768D-4AC5-8737-427E84895C3F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Mono.Interop</RootNamespace>
-    <AssemblyName>Mono.Interop</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <RootNamespace>LibuvSharp.Terminal</RootNamespace>
+    <AssemblyName>LibuvSharp.Terminal</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +19,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,13 +28,36 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Module.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="Widgets\Widget.cs" />
+    <Compile Include="Widgets\Containers\Container.cs" />
+    <Compile Include="Widgets\Containers\FullsizeContainer.cs" />
+    <Compile Include="Widgets\Button.cs" />
+    <Compile Include="Curses\Curses.cs" />
+    <Compile Include="Curses\ColorPair.cs" />
+    <Compile Include="Curses\Window.cs" />
+    <Compile Include="Widgets\Containers\Box.cs" />
+    <Compile Include="ColorString.cs" />
+    <Compile Include="ACS.cs" />
+    <Compile Include="ApplicationContainer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Widgets\" />
+    <Folder Include="Widgets\Containers\" />
+    <Folder Include="Curses\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
+      <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
+      <Name>LibuvSharp</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

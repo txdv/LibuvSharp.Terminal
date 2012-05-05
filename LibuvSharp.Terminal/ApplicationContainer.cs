@@ -1,6 +1,6 @@
 using System;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	class ApplicationContainer : Container
 	{

@@ -1,6 +1,6 @@
 using System;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public class Button : Widget
 	{

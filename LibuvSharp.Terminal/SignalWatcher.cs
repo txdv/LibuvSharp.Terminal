@@ -1,10 +1,7 @@
 using System;
 using System.Threading;
-using Mono.Unix;
-using Mono.Unix.Native;
-using Manos.IO;
 
-namespace Mono.Terminal
+namespace LibuvSharp.Terminal
 {
 	public class SignalWatcher : IBaseWatcher
 	{
