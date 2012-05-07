@@ -113,6 +113,8 @@ namespace LibuvSharp.Terminal
 						sw.Stop();
 						sw.Close();
 					}
+
+					Exit = true;
 				} else if (key == -2) {
 					container.Redraw();
 					container.SetCursorPosition();
@@ -144,7 +146,9 @@ namespace LibuvSharp.Terminal
 				Curses.Terminal.SetColors(colors);
 			}
 
-			Loop.Run();
+			while (!Exit) {
+				Loop.RunOnce();
+			}
 			OnEnd();
 
 			Window.End();
