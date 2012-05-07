@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{654316BA-8985-468C-B2D4-ECE4F437A138}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTest", "ColorTest\ColorTest.csproj", "{811C48CA-B919-430C-9C54-1F422A365515}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibuvSharp.Terminal", "LibuvSharp.Terminal\LibuvSharp.Terminal.csproj", "{80BE055C-768D-4AC5-8737-427E84895C3F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibuvSharp", "LibuvSharp\LibuvSharp\LibuvSharp.csproj", "{281B560A-E3B1-437C-9274-DD655E860E6E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{49DC465D-7D1B-4427-A051-92E5C1BEF15C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorTest", "Samples\ColorTest\ColorTest.csproj", "{811C48CA-B919-430C-9C54-1F422A365515}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Samples\Test\Test.csproj", "{654316BA-8985-468C-B2D4-ECE4F437A138}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,8 +34,12 @@ Global
 		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{811C48CA-B919-430C-9C54-1F422A365515} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
+		{654316BA-8985-468C-B2D4-ECE4F437A138} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
+	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Test\Test.csproj
+		StartupItem = Samples\Test\Test.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120

@@ -3,18 +3,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{811C48CA-B919-430C-9C54-1F422A365515}</ProjectGuid>
+    <ProjectGuid>{654316BA-8985-468C-B2D4-ECE4F437A138}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>ColorTest</RootNamespace>
-    <AssemblyName>ColorTest</AssemblyName>
+    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Test</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Debug</OutputPath>
+    <OutputPath>..\..\bin\Debug</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -23,27 +23,27 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\bin\Release</OutputPath>
+    <OutputPath>..\..\bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>true</Externalconsole>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
-      <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
-      <Name>LibuvSharp.Terminal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
+    <ProjectReference Include="..\..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
       <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
       <Name>LibuvSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
+      <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
+      <Name>LibuvSharp.Terminal</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
