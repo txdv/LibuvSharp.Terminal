@@ -1,9 +1,11 @@
 using System;
 using System.Threading;
+using Mono.Unix;
+using Mono.Unix.Native;
 
 namespace LibuvSharp.Terminal
 {
-	public class SignalWatcher : IBaseWatcher
+	public class SignalWatcher
 	{
 		Thread thread;
 		UnixSignal[] unixSignals;
@@ -11,8 +13,8 @@ namespace LibuvSharp.Terminal
 
 		public Signum[] Signals { get; protected set; }
 
-		public SignalWatcher(Context context, Signum signum, Action callback)
-			: this(context, new Signum[] { signum }, (num) => {
+		public SignalWatcher(Loop loop, Signum signum, Action callback)
+			: this(loop, new Signum[] { signum }, (num) => {
 				if (callback != null) {
 					callback();
 				}
@@ -20,15 +22,15 @@ namespace LibuvSharp.Terminal
 		{
 		}
 
-		public SignalWatcher(Context context, Signum[] signals, Action<Signum> callback)
+		public SignalWatcher(Loop loop, Signum[] signals, Action<Signum> callback)
 		{
 			Signals = signals;
 			unixSignals = new UnixSignal[signals.Length];
 			for (int i = 0; i < signals.Length; i++) {
-				unixSignals[i] = new UnixSignal(signals[i]);
+				unixSignals[i] = new UnixSignal((Mono.Unix.Native.Signum)signals[i]);
 			}
 
-			watcher = new AsyncWatcher<Signum>(context, (key) => {
+			watcher = new AsyncWatcher<Signum>(loop, (key) => {
 				if (callback != null) {
 					callback(key);
 				}
@@ -44,25 +46,17 @@ namespace LibuvSharp.Terminal
 
 		public void Start()
 		{
-			watcher.Start();
 			thread.Start();
 		}
 
 		public void Stop()
 		{
-			watcher.Stop();
 			thread.Abort();
 		}
 
-		public bool IsRunning {
-			get {
-				return watcher.IsRunning;
-			}
-		}
-
-		public void Dispose()
+		public void Close()
 		{
-			watcher.Dispose();
+			watcher.Close();
 		}
 	}
 }

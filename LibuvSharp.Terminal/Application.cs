@@ -68,7 +68,7 @@ namespace LibuvSharp.Terminal
 		static Action<int> keyaction;
 
 		static Poll stdin;
-		//static SignalWatcher sw;
+		static SignalWatcher sw;
 
 
 		public static void Run(Container container)
@@ -90,10 +90,10 @@ namespace LibuvSharp.Terminal
 			container.SetCursorPosition();
 			Curses.Refresh();
 
-			/*sw = new SignalWatcher(Context, Signum.SIGWINCH , () => {
+			sw = new SignalWatcher(Loop, Signum.SIGWINCH , () => {
 				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
 				keyaction(Curses.Key.Resize);
-			});*/
+			});
 
 			var idle = new Idle(Loop);
 
@@ -107,6 +107,11 @@ namespace LibuvSharp.Terminal
 					if (idle != null) {
 						idle.Stop();
 						idle.Close();
+					}
+
+					if (sw != null) {
+						sw.Stop();
+						sw.Close();
 					}
 				} else if (key == -2) {
 					container.Redraw();
@@ -133,7 +138,7 @@ namespace LibuvSharp.Terminal
 					keyaction(-2);
 				}
 			});
-			//sw.Start();
+			sw.Start();
 
 			if (colors != null) {
 				Curses.Terminal.SetColors(colors);
