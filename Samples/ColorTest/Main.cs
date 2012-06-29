@@ -84,6 +84,11 @@ namespace ColorTest
 				ColorString.Fill(this, str, 0, i, Width, 1);
 			}
 		}
+
+		public override void SetCursorPosition()
+		{
+			Curses.Cursor.Move(-1, -1);
+		}
 	}
 
 	class MainClass
