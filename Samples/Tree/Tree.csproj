@@ -35,6 +35,11 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="TreeView.cs" />
+    <Compile Include="TreeEntry.cs" />
+    <Compile Include="TextTreeEntry.cs" />
+    <Compile Include="FileTreeView.cs" />
+    <Compile Include="SimpleList.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
