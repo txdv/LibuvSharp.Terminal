@@ -32,13 +32,15 @@ namespace LibuvSharp.Terminal
 			}
 		}
 
+		public override bool CanFocus {
+			get {
+				return true;
+			}
+		}
+
 		void Clear()
 		{
-			Curses.Cursor.Move(0, 0);
-			Curses.attrset(0);
-			for (int i = 0; i < text.Length + 4; i++) {
-				Curses.Add(' ');
-			}
+			Fill(' ');
 		}
 
 		private string Format
@@ -54,21 +56,17 @@ namespace LibuvSharp.Terminal
 
 		public override void Redraw()
 		{
-
-			Curses.Cursor.Move(0, 0);
 			if (color != null) {
 				Curses.attrset(color.Attribute);
 			}
 
-			if (HasFocus) {
-			}
+			Fill(Format);
 
-			Curses.Add(Format);
 		}
 
 		public override void SetCursorPosition()
 		{
-			Curses.Cursor.Move(0, 2);
+			Move(2, 0);
 		}
 
 		public override bool ProcessKey(int key)

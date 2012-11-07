@@ -131,11 +131,12 @@ namespace LibuvSharp.Terminal
 			};
 
 			stdin = new Poll(Loop, 0);
-			stdin.Start(PollEvent.Read, (_) => {
+			stdin.Event += (_) => {
 				keyaction(Curses.getch());
-			});
+			};
+			stdin.Start(PollEvent.Read);
 
-			idle.Start((_) => {
+			idle.Start(() => {
 				if (container.Invalid) {
 					keyaction(-2);
 				}

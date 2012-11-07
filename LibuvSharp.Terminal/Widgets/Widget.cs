@@ -59,17 +59,13 @@ namespace LibuvSharp.Terminal
 		}
 
 		public Widget(int w, int h)
-			: this()
 		{
-			Width = w;
-			Height = h;
+			SetDim(0, 0, w, h);
 		}
 
 		public Widget(int x, int y, int w, int h)
-			: this(w, h)
 		{
-			X = x;
-			Y = y;
+			SetDim(x, y, w, h);
 		}
 
 		public virtual bool CanFocus {

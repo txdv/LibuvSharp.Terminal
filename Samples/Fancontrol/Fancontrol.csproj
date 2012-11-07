@@ -3,26 +3,26 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{654316BA-8985-468C-B2D4-ECE4F437A138}</ProjectGuid>
+    <ProjectGuid>{DBEC0738-877C-4C71-9F22-A5C9E18E7199}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Test</RootNamespace>
-    <AssemblyName>Test</AssemblyName>
+    <RootNamespace>Fancontrol</RootNamespace>
+    <AssemblyName>Fancontrol</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>..\..\bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Externalconsole>True</Externalconsole>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>False</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\..\bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -37,13 +37,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
-      <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
-      <Name>LibuvSharp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
       <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
       <Name>LibuvSharp.Terminal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
+      <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
+      <Name>LibuvSharp</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

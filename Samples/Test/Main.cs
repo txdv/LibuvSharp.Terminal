@@ -22,7 +22,6 @@ namespace Test
 	{
 		public static void Main(string[] args)
 		{
-
 			Application.Init();
 
 			Application.Run(new FullsizeContainer(new Empty('x')));
