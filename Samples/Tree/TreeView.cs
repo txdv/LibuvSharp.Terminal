@@ -41,6 +41,30 @@ namespace Tree
 			return heigth;
 		}
 
+		bool whiteSpace = false;
+		public bool WhiteSpace {
+			get {
+				return whiteSpace;
+			}
+			set {
+				whiteSpace = value;
+			}
+		}
+
+		public int WhiteSpaceOffset {
+			get {
+				return WhiteSpace ? 1 : 0;
+			}
+		}
+
+		private int Offset {
+			get {
+				// the entries are always at least 2 away from
+				// the sideline
+				return 2 + WhiteSpaceOffset;
+			}
+		}
+
 		public int DrawGrid(int x, int y, int w, TreeEntry entry)
 		{
 			switch (entry.Count) {
@@ -49,7 +73,7 @@ namespace Tree
 			case 1:
 				Set(x    , y + 1, ACS.LLCORNER);
 				Set(x + 1, y + 1, '-');
-				return DrawGrid(x + 2, y + 1, w, entry[0]) + entry.Height;
+				return DrawGrid(x + Offset, y + 1, w, entry[0]) + entry.Height;
 			default:
 				int height = 0;
 				int i = 0, c = entry.Count - 1;
@@ -65,7 +89,7 @@ namespace Tree
 						Set(x + 1, y + height + 1, '-');
 					}
 
-					int childHeight = DrawGrid(x + 2, y + height + child.Height, w - 1, child);
+					int childHeight = DrawGrid(x + Offset, y + height + child.Height, w - 1, child);
 
 					if (!last) {
 						for (int j = 1; j < childHeight; j++) {
