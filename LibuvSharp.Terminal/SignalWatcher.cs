@@ -30,11 +30,12 @@ namespace LibuvSharp.Terminal
 				unixSignals[i] = new UnixSignal((Mono.Unix.Native.Signum)signals[i]);
 			}
 
-			watcher = new AsyncWatcher<Signum>(loop, (key) => {
+			watcher = new AsyncWatcher<Signum>(loop);
+			watcher.Callback += (key) => {
 				if (callback != null) {
 					callback(key);
 				}
-			});
+			};
 
 			thread = new Thread((o) => {
 				while (true) {
