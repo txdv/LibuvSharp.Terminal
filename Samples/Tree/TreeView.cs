@@ -36,7 +36,7 @@ namespace Tree
 			int heigth = entry.Height;
 			entry.SetDim(x, y, w, heigth);
 			foreach (TreeEntry child in entry) {
-				heigth += SetDimElements(x + 1, y + heigth, w - 1, child);
+				heigth += SetDimElements(x + 2, y + heigth, w - 1, child);
 			}
 			return heigth;
 		}
@@ -47,8 +47,9 @@ namespace Tree
 			case 0:
 				return entry.Height;
 			case 1:
-				Set(x, 1 + y, ACS.LLCORNER);
-				return DrawGrid(x, y, w, entry[0]) + entry.Height;
+				Set(x    , y + 1, ACS.LLCORNER);
+				Set(x + 1, y + 1, '-');
+				return DrawGrid(x + 2, y + 1, w, entry[0]) + entry.Height;
 			default:
 				int height = 0;
 				int i = 0, c = entry.Count - 1;
@@ -57,16 +58,18 @@ namespace Tree
 					bool last = i == c;
 					bool middle = !first && !last;
 					if (first || middle) {
-						Set(x, 1 + y + height, ACS.LTEE);
+						Set(x,     y + height + 1, ACS.LTEE);
+						Set(x + 1, y + height + 1, '-');
 					} else {
-						Set(x, 1 + y + height, ACS.LLCORNER);
+						Set(x,     y + height + 1, ACS.LLCORNER);
+						Set(x + 1, y + height + 1, '-');
 					}
 
-					int childHeight = DrawGrid(x + 1, 1 + y + height + child.Height - 1, w - 1, child);
+					int childHeight = DrawGrid(x + 2, y + height + child.Height, w - 1, child);
 
 					if (!last) {
 						for (int j = 1; j < childHeight; j++) {
-							Set(x, 1 + y + height + j, ACS.VLINE);
+							Set(x, y + height + j + 1, ACS.VLINE);
 						}
 					}
 
