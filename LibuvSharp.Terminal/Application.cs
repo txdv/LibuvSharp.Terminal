@@ -95,18 +95,11 @@ namespace LibuvSharp.Terminal
 				keyaction(Curses.Key.Resize);
 			});
 
-			var prepare = new Prepare(Loop);
-
 			keyaction = (key) => {
 				if (key == QuitKey) {
 					if (stdin != null) {
 						stdin.Close();
 						stdin = null;
-					}
-
-					if (prepare != null) {
-						prepare.Stop();
-						prepare.Close();
 					}
 
 					if (sw != null) {
@@ -136,11 +129,6 @@ namespace LibuvSharp.Terminal
 			};
 			stdin.Start(PollEvent.Read);
 
-			prepare.Start(() => {
-				if (container.Invalid) {
-					keyaction(-2);
-				}
-			});
 			sw.Start();
 
 			if (colors != null) {
@@ -148,6 +136,9 @@ namespace LibuvSharp.Terminal
 			}
 
 			while (!Exit) {
+				if (container.Invalid) {
+					keyaction(-2);
+				}
 				Loop.RunOnce();
 			}
 			OnEnd();
