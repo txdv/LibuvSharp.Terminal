@@ -95,7 +95,7 @@ namespace LibuvSharp.Terminal
 				keyaction(Curses.Key.Resize);
 			});
 
-			var idle = new Idle(Loop);
+			var prepare = new Prepare(Loop);
 
 			keyaction = (key) => {
 				if (key == QuitKey) {
@@ -104,9 +104,9 @@ namespace LibuvSharp.Terminal
 						stdin = null;
 					}
 
-					if (idle != null) {
-						idle.Stop();
-						idle.Close();
+					if (prepare != null) {
+						prepare.Stop();
+						prepare.Close();
 					}
 
 					if (sw != null) {
@@ -136,7 +136,7 @@ namespace LibuvSharp.Terminal
 			};
 			stdin.Start(PollEvent.Read);
 
-			idle.Start(() => {
+			prepare.Start(() => {
 				if (container.Invalid) {
 					keyaction(-2);
 				}
