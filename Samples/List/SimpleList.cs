@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using LibuvSharp.Terminal;
 using System.Linq;
 
-namespace Tree
+namespace List
 {
 	class SimpleList : Container, IList<Widget>
 	{
