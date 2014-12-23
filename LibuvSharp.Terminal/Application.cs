@@ -63,7 +63,7 @@ namespace LibuvSharp.Terminal
 			}
 		}
 
-		public static Action End;
+		public static event Action End;
 
 		static Action<int> keyaction;
 
