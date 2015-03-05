@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class ColorPair
 	{

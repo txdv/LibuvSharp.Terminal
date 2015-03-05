@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using LibuvSharp;
-using LibuvSharp.Terminal;
 using System.Text;
+using LibuvSharp;
+using Terminal;
 
 namespace Fancontrol
 {

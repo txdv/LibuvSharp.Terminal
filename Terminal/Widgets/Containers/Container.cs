@@ -1,4 +1,4 @@
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public abstract class Container : Widget
 	{

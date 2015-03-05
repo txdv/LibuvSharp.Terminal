@@ -1,5 +1,5 @@
 using System;
-using LibuvSharp.Terminal;
+using Terminal;
 
 namespace Tree
 {

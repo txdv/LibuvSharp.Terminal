@@ -1,6 +1,6 @@
 using System;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class FullsizeContainer : Container
 	{

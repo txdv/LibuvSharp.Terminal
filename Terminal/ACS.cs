@@ -1,4 +1,4 @@
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public static class ACS
 	{

@@ -2,8 +2,10 @@ using System;
 using System.Threading;
 using Mono.Unix;
 using Mono.Unix.Native;
+using LibuvSharp;
+using Signum = LibuvSharp.Signum;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class SignalWatcher
 	{

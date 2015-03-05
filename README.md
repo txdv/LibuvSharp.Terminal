@@ -1,6 +1,6 @@
-# LibuvSharp.Terminal
+# Terminal
 
-A terminal library based on ncurses and libuv(LibuvSharp).
+A terminal library based on ncurses.
 
 ## License
 

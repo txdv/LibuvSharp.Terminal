@@ -1,6 +1,6 @@
 using System;
-using LibuvSharp.Terminal;
 using System.Linq;
+using Terminal;
 
 namespace Tree
 {

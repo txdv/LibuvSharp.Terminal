@@ -37,13 +37,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
-      <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
-      <Name>LibuvSharp.Terminal</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\LibuvSharp\LibuvSharp\LibuvSharp.csproj">
       <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
       <Name>LibuvSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Terminal\Terminal.csproj">
+      <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
+      <Name>Terminal</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

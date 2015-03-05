@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using LibuvSharp;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class Application
 	{

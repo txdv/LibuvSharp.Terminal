@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class ColorString
 	{

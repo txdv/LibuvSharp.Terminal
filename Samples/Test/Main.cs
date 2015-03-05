@@ -1,6 +1,5 @@
 using System;
-using LibuvSharp;
-using LibuvSharp.Terminal;
+using Terminal;
 
 namespace Test
 {

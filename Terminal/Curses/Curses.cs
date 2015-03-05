@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using LibuvSharp;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	unsafe public class Curses
 	{

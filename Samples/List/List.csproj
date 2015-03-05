@@ -39,9 +39,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
+    <ProjectReference Include="..\..\Terminal\Terminal.csproj">
       <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
-      <Name>LibuvSharp.Terminal</Name>
+      <Name>Terminal</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

@@ -41,9 +41,9 @@
       <Project>{281B560A-E3B1-437C-9274-DD655E860E6E}</Project>
       <Name>LibuvSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\LibuvSharp.Terminal\LibuvSharp.Terminal.csproj">
+    <ProjectReference Include="..\..\Terminal\Terminal.csproj">
       <Project>{80BE055C-768D-4AC5-8737-427E84895C3F}</Project>
-      <Name>LibuvSharp.Terminal</Name>
+      <Name>Terminal</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

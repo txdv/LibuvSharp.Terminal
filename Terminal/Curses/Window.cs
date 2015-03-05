@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace LibuvSharp.Terminal
+namespace Terminal
 {
 	public class Window
 	{
