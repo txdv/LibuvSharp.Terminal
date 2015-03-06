@@ -22,10 +22,6 @@ namespace Tree
 		{
 			base.Redraw();
 
-			//foreach (TreeEntry element in Root) {
-			//	element.Redraw();
-			//	DrawGrid(X, Y, Width, Height, element);
-			//}
 			Root[0].Redraw();
 			DrawGrid(0, 0, Width, Root[0]);
 

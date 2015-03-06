@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Linq;
 using LibuvSharp;
 
 namespace Terminal
@@ -464,8 +465,67 @@ namespace Terminal
 		[DllImport("ncursesw")]
 		public static extern int attron(int attr);
 
+		public static int AttributeOn(int attribute)
+		{
+			return attron(attribute);
+		}
+
+		public static int AttributeOn(ColorPair colorPair)
+		{
+			return AttributeOn(colorPair.Attribute);
+		}
+
 		[DllImport("ncursesw")]
 		public static extern int attroff(int attr);
+
+		public static int AttributeOff(int attribute)
+		{
+			return attroff(attribute);
+		}
+
+		public static int AttributeOff(ColorPair colorPair)
+		{
+			return AttributeOff(colorPair.Attribute);
+		}
+
+		public static void Attribute(int attribute, Action action)
+		{
+			AttributeOn(attribute);
+			if (action != null) {
+				action();
+			}
+			AttributeOff(attribute);
+		}
+
+		public static void Attribute(ColorPair colorPair, Action action)
+		{
+			Attribute(colorPair.Attribute, action);
+		}
+
+		public static CursesAttribute Attribute(int attribute)
+		{
+			return new CursesAttribute(attribute);
+		}
+
+		public static CursesAttribute Attribute(params int[] attributes)
+		{
+			return Attribute(attributes.Aggregate((a, b) => a | b));
+		}
+
+		public static CursesAttribute Attribute(ColorPair colorPair)
+		{
+			return Attribute(colorPair.Attribute);
+		}
+
+		public static CursesAttribute Attribute(System.Drawing.Color foreground, params int[] attributes)
+		{
+			return Attribute(ColorPair.From(foreground, attributes));
+		}
+
+		public static CursesAttribute Attribute(System.Drawing.Color foreground, System.Drawing.Color background, params int[] attributes)
+		{
+			return Attribute(ColorPair.From(foreground, background, attributes));
+		}
 
 		[DllImport("ncursesw")]
 		internal static extern int init_color(ushort color, short r, short g, short b);
@@ -484,6 +544,22 @@ namespace Terminal
 
 		[DllImport("ncursesw")]
 		internal static extern int keypad(IntPtr window, bool bf);
+	}
+
+	public class CursesAttribute : IDisposable
+	{
+		public int Attribute { get; private set; }
+
+		public CursesAttribute(int attribute)
+		{
+			Attribute = attribute;
+			Curses.AttributeOn(Attribute);
+		}
+
+		public void Dispose()
+		{
+			Curses.AttributeOff(Attribute);
+		}
 	}
 }
 

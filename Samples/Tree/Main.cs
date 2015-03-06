@@ -21,7 +21,8 @@ namespace Tree
 		public static void Main(string[] args)
 		{
 			Application.Init();
-			Application.Run(new FileTreeView("/home/bentkus/"));
+			var path = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			Application.Run(new FileTreeView(path));
 		}
 	}
 }

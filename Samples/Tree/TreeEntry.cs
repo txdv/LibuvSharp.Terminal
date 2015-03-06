@@ -99,22 +99,6 @@ namespace Tree
 				element.Redraw();
 			}
 		}
-
-		/*
-		public override void SetDim(int x, int y, int w, int h)
-		{
-			base.SetDim(x, y, w, h);
-
-			foreach (TreeEntry element in this) {
-				element.SetDim(0, 0, Width, 1);
-			}
-		}
-		*/
-
-		public virtual void DrawElements(int offset)
-		{
-		}
-
 	}
 }
 

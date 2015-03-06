@@ -1,4 +1,5 @@
 using System;
+using Terminal;
 
 namespace Tree
 {
@@ -12,7 +13,7 @@ namespace Tree
 			Height = 1;
 		}
 
-		public override void Redraw ()
+		public override void Redraw()
 		{
 			base.Redraw();
 			Fill(Text);
