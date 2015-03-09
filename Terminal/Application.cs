@@ -74,80 +74,82 @@ namespace Terminal
 
 		public static void Run(Container container)
 		{
-			container = new ApplicationContainer(container);
+			try {
+				container = new ApplicationContainer(container);
 
-			if (Loop == null) {
-				throw new Exception("You have to initialize the application with a context");
-			}
-
-			if (container.CanFocus) {
-				container.HasFocus = true;
-			}
-
-			// draw everything and refresh curses
-			container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
-
-			container.Redraw();
-			container.SetCursorPosition();
-			Curses.Refresh();
-
-			sw = new SignalWatcher(Loop, Signum.SIGWINCH , () => {
-				Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
-				keyaction(Curses.Key.Resize);
-			});
-
-			keyaction = (key) => {
-				if (key == QuitKey) {
-					if (stdin != null) {
-						stdin.Close();
-						stdin = null;
-					}
-
-					if (sw != null) {
-						sw.Stop();
-						sw.Close();
-					}
-
-					Exit = true;
-				} else if (key == -2) {
-					container.Redraw();
-					container.SetCursorPosition();
-					Curses.Refresh();
-				} else if (key == Curses.Key.Resize) {
-					container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
-					container.ProcessKey(Curses.Key.Resize);
-					container.ForceRedraw();
-					container.SetCursorPosition();
-					Curses.Refresh();
-				} else {
-					container.ProcessKey(key);
+				if (Loop == null) {
+					throw new Exception("You have to initialize the application with a context");
 				}
-			};
 
-			stdin = new Poll(Loop, 0);
-			stdin.Event += (_) => {
-				keyaction(Curses.getch());
-			};
-			stdin.Start(PollEvent.Read);
-
-			sw.Start();
-
-			if (colors != null) {
-				Curses.Terminal.SetColors(colors);
-			}
-
-			while (!Exit) {
-				if (container.Invalid) {
-					keyaction(-2);
+				if (container.CanFocus) {
+					container.HasFocus = true;
 				}
-				Loop.RunOnce();
+
+				// draw everything and refresh curses
+				container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
+
+				container.Redraw();
+				container.SetCursorPosition();
+				Curses.Refresh();
+
+				sw = new SignalWatcher(Loop, Signum.SIGWINCH , () => {
+					Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
+					keyaction(Curses.Key.Resize);
+				});
+
+				keyaction = (key) => {
+					if (key == QuitKey) {
+						if (stdin != null) {
+							stdin.Close();
+							stdin = null;
+						}
+
+						if (sw != null) {
+							sw.Stop();
+							sw.Close();
+						}
+
+						Exit = true;
+					} else if (key == -2) {
+						container.Redraw();
+						container.SetCursorPosition();
+						Curses.Refresh();
+					} else if (key == Curses.Key.Resize) {
+						container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
+						container.ProcessKey(Curses.Key.Resize);
+						container.ForceRedraw();
+						container.SetCursorPosition();
+						Curses.Refresh();
+					} else {
+						container.ProcessKey(key);
+					}
+				};
+
+				stdin = new Poll(Loop, 0);
+				stdin.Event += (_) => {
+					keyaction(Curses.getch());
+				};
+				stdin.Start(PollEvent.Read);
+
+				sw.Start();
+
+				if (colors != null) {
+					Curses.Terminal.SetColors(colors);
+				}
+
+				while (!Exit) {
+					if (container.Invalid) {
+						keyaction(-2);
+					}
+					Loop.RunOnce();
+				}
+				OnEnd();
+			} finally {
+				Window.End();
+				Running = false;
+
+				Loop = null;
 			}
-			OnEnd();
-
-			Window.End();
-			Running = false;
-
-			Loop = null;
 		}
 	}
 }
