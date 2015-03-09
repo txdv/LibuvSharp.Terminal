@@ -123,6 +123,10 @@ namespace Terminal
 			return string.Format ("\x0000{0},{1} ", Foreground, Background);
 		}
 
+		// TODO:
+		// determine whether to use DarkRed for normal Red and Red for LightRed
+		// same goes for Magent, seriously microsoft, why did you have to ommit
+		// these two nice colors.
 		static Dictionary<Color, int> colorsBasic = new Dictionary<Color, int>() {
 			{ Color.Transparent,  -1 },
 			{ Color.Black,         0 },
@@ -130,6 +134,18 @@ namespace Terminal
 			{ Color.Green,         2 },
 			{ Color.Yellow,        3 },
 			{ Color.Blue,          4 },
+			{ Color.Magenta,       5 },
+			{ Color.Cyan,          6 },
+			{ Color.LightGray,     7 },
+			{ Color.DarkGray,      8 },
+			//{ Color.LightRed,      9 },
+			{ Color.Pink,          9 },
+			{ Color.LightGreen,   10 },
+			{ Color.LightYellow,  11 },
+			{ Color.LightBlue,    12 },
+			//{ Color.LightMagenta, 13 },
+			{ Color.LightPink,    13 },
+			{ Color.LightCyan,    14 },
 		};
 
 		public static int ConvertBasic(Color color)
