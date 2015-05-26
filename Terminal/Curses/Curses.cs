@@ -461,6 +461,18 @@ namespace Terminal
 		[DllImport("ncursesw")]
 		internal static extern int curs_set(int visibility);
 
+		private static CursorVisibility cursorVisibility;
+		public static CursorVisibility CursorVisibility {
+			set {
+				cursorVisibility = value;
+				int r = curs_set((int)value);
+				Ensure(r);
+			}
+			get {
+				return cursorVisibility;
+			}
+		}
+
 		[DllImport("ncursesw")]
 		public static extern int init_pair(ushort pair, ushort f, ushort b);
 
@@ -552,6 +564,12 @@ namespace Terminal
 
 		[DllImport("ncursesw")]
 		internal static extern int keypad(IntPtr window, bool bf);
+	}
+
+	public enum CursorVisibility : int {
+		Invisible = 0,
+		Normal = 1,
+		VeryVisibile = 2,
 	}
 
 	public class CursesAttribute : IDisposable
