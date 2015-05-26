@@ -564,6 +564,15 @@ namespace Terminal
 
 		[DllImport("ncursesw")]
 		internal static extern int keypad(IntPtr window, bool bf);
+
+		[DllImport("ncursesw")]
+		internal static extern int has_colors();
+
+		public static bool HasColors {
+			get {
+				return has_colors() > 0;
+			}
+		}
 	}
 
 	public enum CursorVisibility : int {
