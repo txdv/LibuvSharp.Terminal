@@ -8,6 +8,13 @@ namespace Terminal
 {
 	unsafe public class Curses
 	{
+		internal static void Ensure(int errorCode)
+		{
+			if (errorCode == -1) {
+				throw new Exception("Curses");
+			}
+		}
+
 		internal static DynamicLibrary Module { get; set; }
 
 		internal static void Init()
@@ -324,7 +331,8 @@ namespace Terminal
 
 			public static void GetPair(short index, out ushort foreground, out ushort background)
 			{
-				Curses.pair_content(index, out foreground, out background);
+				int r = Curses.pair_content(index, out foreground, out background);
+				Ensure(r);
 			}
 		}
 
