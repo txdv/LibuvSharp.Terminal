@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fancontrol", "Samples\Fanco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "List", "Samples\List\List.csproj", "{DE2CAC44-C847-401F-AD0A-F83F79210FC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObservableList", "Samples\ObservableList\ObservableList.csproj", "{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{811C48CA-B919-430C-9C54-1F422A365515}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811C48CA-B919-430C-9C54-1F422A365515}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DBEC0738-877C-4C71-9F22-A5C9E18E7199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DBEC0738-877C-4C71-9F22-A5C9E18E7199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBEC0738-877C-4C71-9F22-A5C9E18E7199}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -58,9 +64,9 @@ Global
 		{E5BC7B0B-96B4-4F8B-802D-682BB129CA9C} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
 		{DBEC0738-877C-4C71-9F22-A5C9E18E7199} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
 		{DE2CAC44-C847-401F-AD0A-F83F79210FC9} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
+		{C8BFF92E-17F3-4182-A5AA-368B74CEAF3E} = {49DC465D-7D1B-4427-A051-92E5C1BEF15C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Samples\Test\Test.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
 		$1.FileWidth = 120
