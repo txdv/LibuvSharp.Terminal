@@ -1,5 +1,7 @@
 using System;
 using System.Drawing;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Terminal
 {
@@ -45,8 +47,40 @@ namespace Terminal
 			}
 		}
 
+		internal void Log(string functionName, params object[] parameters)
+		{
+			Debug.Log("{1}#{0}:{2}({3})", this, GetHashCode().ToString("X8"), functionName, string.Join(", ", parameters));
+		}
+
+		Dictionary<string, string> dict = new Dictionary<string, string>() {
+			{ "Int32", "int" }
+		};
+
+		string GetName(string type)
+		{
+			string value;
+			if (dict.TryGetValue(type, out value)) {
+				return value;
+			} else {
+				return type;
+			}
+		}
+
+		internal void Log(params object[] parameters)
+		{
+			var st = new System.Diagnostics.StackTrace();
+			var method = st.GetFrame(1).GetMethod();
+
+			Log(method.Name, method.GetParameters().Select((param, index) => {
+				var tmp = param.ToString().Split(' ');
+				return string.Format("{0} {1} = {2}", GetName(tmp.First()), tmp.Last(), parameters[index]);
+			}).ToArray());
+		}
+
 		public virtual void SetDim(int x, int y, int w, int h)
 		{
+			Log(x, y, w, h);
+
 			this.x = x;
 			this.y = y;
 			width = w;
@@ -57,15 +91,18 @@ namespace Terminal
 
 		public Widget()
 		{
+			Debug.Log("{0}()", this);
 		}
 
 		public Widget(int w, int h)
 		{
+			Debug.Log("{0}({1}, {2})", this, w, h);
 			SetDim(0, 0, w, h);
 		}
 
 		public Widget(int x, int y, int w, int h)
 		{
+			Debug.Log("{0}({1}, {2}, {3}, {4})", this, x, y, w, h);
 			SetDim(x, y, w, h);
 		}
 
@@ -75,14 +112,27 @@ namespace Terminal
 			}
 		}
 
-		public virtual bool HasFocus { get; set; }
+		bool hasFocus;
+		public virtual bool HasFocus {
+			get {
+				Log(hasFocus);
+				return hasFocus;
+			}
+			set {
+				Log(hasFocus, value);
+				hasFocus = value;
+			}
+		}
 
 		private bool invalid = false;
 		public virtual bool Invalid {
 			get {
+				Log();
 				return invalid;
 			}
 			set {
+				Log(value);
+
 				if (value) {
 					if (Container != null && !Container.Invalid) {
 						Container.Invalid = true;
@@ -100,6 +150,7 @@ namespace Terminal
 
 		public virtual void Redraw()
 		{
+			Log();
 			Invalid = false;
 		}
 
@@ -110,6 +161,7 @@ namespace Terminal
 
 		public virtual bool ProcessKey(int key)
 		{
+			Log(key);
 			return false;
 		}
 

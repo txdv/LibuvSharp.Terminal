@@ -42,6 +42,8 @@ namespace Terminal
 
 		public static void Init(Loop loop)
 		{
+			Debug.Log("Application Init");
+
 			Window.Init();
 
 			Running = true;
@@ -74,6 +76,9 @@ namespace Terminal
 
 		public static void Run(Container container)
 		{
+			Debug.Log("Application Start");
+
+			Debug.Log("Application ThreadId: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
 			try {
 				container = new ApplicationContainer(container);
 
@@ -86,6 +91,7 @@ namespace Terminal
 				}
 
 				// draw everything and refresh curses
+				Debug.Log("Terminal width: {0} Terminal height: {1}", Curses.Terminal.Width, Curses.Terminal.Height);
 				container.SetDim(0, 0, Curses.Terminal.Width, Curses.Terminal.Height);
 
 				container.Redraw();
@@ -149,6 +155,7 @@ namespace Terminal
 				Running = false;
 
 				Loop = null;
+				Debug.Log("Application End");
 			}
 		}
 	}

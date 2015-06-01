@@ -68,6 +68,8 @@ namespace Terminal
 
 		public override bool ProcessKey(int key)
 		{
+			Log(key);
+
 			// enter
 			if (key == 10) {
 				if (PressEvent != null) {
