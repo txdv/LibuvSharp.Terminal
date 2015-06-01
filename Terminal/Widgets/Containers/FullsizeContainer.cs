@@ -10,9 +10,13 @@ namespace Terminal
 			set {
 				widget = value;
 				widget.Container = this;
-				widget.SetDim(X, Y, Width, Height);
-				Fill(' ');
-				widget.Redraw();
+
+				// TODO: fix here, check if application is running?
+				if (Width > 0 && Height > 0) {
+					widget.SetDim(X, Y, Width, Height);
+					Fill(' ');
+					widget.Redraw();
+				}
 			}
 		}
 
@@ -24,6 +28,10 @@ namespace Terminal
 			}
 
 			Widget = widget;
+
+			if (widget != null && widget.Invalid) {
+				Invalid = true;
+			}
 		}
 
 		public override void Redraw()
