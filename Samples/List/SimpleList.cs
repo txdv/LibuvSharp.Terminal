@@ -202,6 +202,8 @@ namespace List
 
 		public override bool ProcessKey(int key)
 		{
+			base.ProcessKey(key);
+
 			switch (key) {
 			case 259: // up
 				return Previous();
