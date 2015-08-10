@@ -216,7 +216,6 @@ namespace Fancontrol
 			fc.Populate();
 
 			Application.Run(new FullsizeContainer(fc));
-			Application.Exit = true;
 		}
 	}
 }
