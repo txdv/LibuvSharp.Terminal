@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using LibuvSharp;
 
 namespace Terminal
@@ -88,8 +89,17 @@ namespace Terminal
 		static SignalWatcher signalWatcher;
 		static Prepare prepare;
 
-
 		public static void Run(Container container)
+		{
+			BaseRun(container, () => Loop.Run());
+		}
+
+		public static void Run(Container container, Func<Task> asyncMethod)
+		{
+			BaseRun(container, () => Loop.Run(asyncMethod));
+		}
+
+		static void BaseRun(Container container, Action run)
 		{
 			Debug.Log("Application Start");
 
@@ -155,7 +165,7 @@ namespace Terminal
 					Curses.Terminal.SetColors(colors);
 				}
 
-				Loop.Run();
+				run?.Invoke();
 
 				OnEnd();
 			} finally {
