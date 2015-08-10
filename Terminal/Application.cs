@@ -10,7 +10,21 @@ namespace Terminal
 
 		public static int QuitKey { get; set; }
 		public static int Timeout { get; set; }
-		public static bool Exit { get; set; }
+
+		public static void Exit()
+		{
+			if (stdin != null) {
+				stdin.Close();
+				stdin = null;
+			}
+
+			if (signalWatcher != null) {
+				signalWatcher.Stop();
+				signalWatcher.Close();
+			}
+
+			Loop.Stop();
+		}
 
 		public static bool Running { get; private set; }
 		private static bool Drawing { get; set; }
@@ -71,7 +85,8 @@ namespace Terminal
 		static Action<int> keyaction;
 
 		static Poll stdin;
-		static SignalWatcher sw;
+		static SignalWatcher signalWatcher;
+		static Prepare prepare;
 
 
 		public static void Run(Container container)
@@ -98,24 +113,9 @@ namespace Terminal
 				container.SetCursorPosition();
 				Curses.Refresh();
 
-				sw = new SignalWatcher(Loop, Signum.SIGWINCH , () => {
-					Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
-					keyaction(Curses.Key.Resize);
-				});
-
 				keyaction = (key) => {
 					if (key == QuitKey) {
-						if (stdin != null) {
-							stdin.Close();
-							stdin = null;
-						}
-
-						if (sw != null) {
-							sw.Stop();
-							sw.Close();
-						}
-
-						Exit = true;
+						Exit();
 					} else if (key == -2) {
 						container.Redraw();
 						container.SetCursorPosition();
@@ -125,11 +125,18 @@ namespace Terminal
 						container.ProcessKey(Curses.Key.Resize);
 						container.ForceRedraw();
 						container.SetCursorPosition();
+						container.Invalid = true;
 						Curses.Refresh();
 					} else {
 						container.ProcessKey(key);
 					}
 				};
+
+				signalWatcher = new SignalWatcher(Loop, Signum.SIGWINCH , () => {
+					Curses.resizeterm(Console.WindowHeight, Console.WindowWidth);
+					keyaction(Curses.Key.Resize);
+				});
+				signalWatcher.Start();
 
 				stdin = new Poll(Loop, 0);
 				stdin.Event += (_) => {
@@ -137,18 +144,19 @@ namespace Terminal
 				};
 				stdin.Start(PollEvent.Read);
 
-				sw.Start();
+				prepare = new Prepare();
+				prepare.Start(() => {
+					if (container.Invalid) {
+						keyaction(-2);
+					}
+				});
 
 				if (colors != null) {
 					Curses.Terminal.SetColors(colors);
 				}
 
-				while (!Exit) {
-					if (container.Invalid) {
-						keyaction(-2);
-					}
-					Loop.RunOnce();
-				}
+				Loop.Run();
+
 				OnEnd();
 			} finally {
 				Window.End();
