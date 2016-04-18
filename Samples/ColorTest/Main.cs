@@ -12,14 +12,12 @@ namespace ColorTest
 				return start;
 			}
 			set {
-				int max = Curses.Colors - Height;
 				if (value < 0) {
 					start = 0;
-				} else if (value > max) {
-					start = max;
 				} else {
-					start = value;
+					start = Math.Min(Curses.Colors - Height, value);
 				}
+				Debug.Log("start value = {0}", start);
 			}
 		}
 
@@ -32,22 +30,18 @@ namespace ColorTest
 		public override bool ProcessKey (int key)
 		{
 			switch (key) {
-			case 338:
+			case 338: // page down
 				Start += TerminalHeight;
-				Invalid = true;
-				return true;
-			case 339:
+				return (Invalid = true);
+			case 339: // page up
 				Start -= TerminalHeight;
-				Invalid = true;
-				return true;
-			case 259:
+				return (Invalid = true);
+			case 259: // arrow up
 				Start -= 1;
-				Invalid = true;
-				return true;
-			case 258:
+				return (Invalid = true);
+			case 258: // arrow down
 				Start += 1;
-				Invalid = true;
-				return true;
+				return (Invalid = true);
 			default:
 				return base.ProcessKey(key);
 			}
