@@ -14,7 +14,7 @@ namespace Terminal
 
 		public static void Log(string log)
 		{
-			sw.WriteLine(string.Format("[{0}] {1}", DateTime.Now, log));
+			sw.WriteLine(string.Format("[{0}] {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.ffff"), log));
 		}
 
 		public static void Log(string log, params object[] parameters)
