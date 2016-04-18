@@ -42,10 +42,15 @@ namespace ColorTest
 			case 258: // arrow down
 				Start += 1;
 				return (Invalid = true);
+			case 262: // home
+				Start = 0;
+				return (Invalid = true);
+			case 360: // End
+				Start = int.MaxValue;
+				return (Invalid = true);
 			default:
 				return base.ProcessKey(key);
 			}
-
 		}
 
 		string FillSpace(int number)
