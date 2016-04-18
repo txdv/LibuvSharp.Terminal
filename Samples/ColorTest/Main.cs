@@ -88,6 +88,17 @@ namespace ColorTest
 		{
 			Curses.Cursor.Move(-1, -1);
 		}
+
+		public override void SetDim(int x, int y, int w, int h)
+		{
+			base.SetDim(x, y, w, h);
+
+			int size = Curses.Colors - (Start + Height);
+
+			if (size < 0) {
+				Start += size;
+			}
+		}
 	}
 
 	class MainClass
